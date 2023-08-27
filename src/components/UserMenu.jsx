@@ -48,7 +48,7 @@ const UserMenu = () => {
         </li>
         <li>
           <a className="dropdown-item" href="#">
-            Something else here
+            Temporary
           </a>
         </li>
         <li>
@@ -56,7 +56,7 @@ const UserMenu = () => {
         </li>
         <li>
           <a className="dropdown-item" href="#">
-            Separated link
+            Temporary
           </a>
         </li>
       </ul>
