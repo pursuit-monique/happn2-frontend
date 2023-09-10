@@ -1,32 +1,49 @@
 import './NewButton.css';
-import { Link } from "react-router-dom";
+
 import React, { useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
 
 
 
 
 const NewButton = () => {
-
+    const [showModal, setShowModal] = useState(false);
+  
+    const handleCloseModal = () => {
+      setShowModal(false);
+    };
+  
+    const handleShowModal = () => {
+      setShowModal(true);
+    };
+  
     return (
-        <>
-            <div className="NewButton">
-                {/* <Link to="/new" > */}
-                    <span data-bs-toggle="tooltip" data-bs-title="Create New Event"><svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#F6F9F9" class="bi bi-plus" viewBox="0 0 16 16" 
-        style={{ cursor: 'pointer' }}
-        data-bs-toggle="modal"
-        data-bs-target="#myModal"
-        >
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                </svg>
-                </span>
-                {/* </Link> */}
+      <>
+        <div className="NewButton">
+          <span
+            data-bs-toggle="tooltip"
+            data-bs-title="Create New Event"
+            onClick={handleShowModal}
+          >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="64"
+            height="64"
+            fill="#F6F9F9"
+            className="bi bi-plus"
+            viewBox="0 0 16 16"
+            style={{ cursor: 'pointer' }}
+          >
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+          </svg>
+        </span>
+      </div>
 
-            </div>
-
-
-            <div className="modal fade" id="myModal" tabIndex="-1" aria-labelledby="Submit New Event" aria-hidden="true">
-            <div className="form_container align-self-center">
-        <div class="card border-0 shadow-lg m-4" style={{ width: "100%" }}>
+      <Modal show={showModal} onHide={handleCloseModal} id="myModal" dialogClassName="custom-modal-dialog"
+          contentClassName="custom-modal-content"
+          backdropClassName="custom-modal-backdrop">
+            <div className="align-self-center">
+        <div class="card border-0 shadow-lg m-4" style={{ width: "50vw", height: "auto"}}>
           <div class="card-body">
           <div className="modal-header border-0 p-0 m-0">
         <h3 className="modal-title">
@@ -151,7 +168,7 @@ const NewButton = () => {
           </div>
         </div>
       </div>
-      </div>
+      </Modal>
     
         </>
     )

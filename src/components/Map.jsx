@@ -1,14 +1,17 @@
 import './Card.css'
 
-import { useEffect, useState, useRef  } from "react";
+import axios from 'axios';
+import { useEffect, useState, useRef, useContext } from "react";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { tempData } from '../helpers/Objects';
 
 import UserMenu from './UserMenu';
 import NewsPanel from './NewsPanel';
 import NewButton from './NewButton';
-import CauseList from './CauseList';
 import EventCards from './EventCards';
+import Radius from './Radius';
+
+import { UserContext } from "../App";
 
 import './Card.css'
 
@@ -18,18 +21,66 @@ import './Card.css'
 
 
 const Map = () => {
+  const {settings} = useContext(UserContext);
+
   const [currMap, setMap] = useState();
   const [currID, setID] = useState();
+  const [radiusMarker, setRadiusMarker] = useState();
 
-    const mapRef = useRef(null);
-     
+  const [currPos, setCurrPos] = useState();
+
+  const mapRef = useRef(null);
+  let id;
+  
+    useEffect(()=>{
+      const nothing = "cat";
+      console.log(radiusMarker)
+      console.log(currPos)
+      if (radiusMarker) 
+      {radiusMarker.setRadius(settings.radius);
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/events`, {
+          params: {
+            latitude: currPos.lat,
+            longitude: currPos.lng,
+            radius: settings.radius,
+          },
+          
+        })
+        .then(response => {
+          console.log("Success: ", response.data);
+      
+          return response.data;
+        })
+        .catch(error => {
+          console.error("Error: ", error);
+  
+          throw error;
+        });
+  
+      }
+
+
+    },[settings.radius])
+    function error(err) {
+      console.error(`ERROR(${err.code}): ${err.message}`);
+    }
+
+    
+    let options = {
+      enableHighAccuracy: false,
+      timeout: 30000,
+      maximumAge: 0,
+    };
+    
+    
   useEffect(() => {
+
 
     const google = window.google;
 
     if (google && mapRef.current) {
       const mapOptions = {
-        center: { lat: 40.668660, lng: -73.749600 },
+        center: { lat: currPos?.latitude || 40, lng: currPos?.longitude || -72 },
         zoom: 11,
         mapId: 'c46a80dd73b97856',
           zoomControl: false,
@@ -39,15 +90,97 @@ const Map = () => {
           rotateControl: false,
           fullscreenControl: false
       };
-      
 
       const map = new google.maps.Map(mapRef.current, mapOptions);
       setMap(map);
       advancedMarkerGenerator();
+      function pinSymbol(color) {
+        return {
+            path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
+            fillColor: color,
+            fillOpacity: 1,
+            strokeColor: '#314983',
+            strokeWeight: 2,
+            scale: 1,
+       };
+      }
+      var marker2 = new google.maps.Marker({
+        position: {lat: 40.7749, lng: -72.4194}, 
+        map: map,
+        icon: pinSymbol("#7ddcd9"),
+        title: 'You!'
+      });
+      const radius = new google.maps.Circle({
+        strokeColor: "#ec8527",
+        strokeOpacity: 0.6,
+        strokeWeight: 2,
+        fillColor: "#F7DFBC",
+        fillOpacity: 0.25,
+        map,
+        center: {lat: 40.7749, lng: -72.4194},
+        // center: { lat: crd.latitude, lng: crd.longitude},
+        radius: settings.radius, // Measured in meters, apparently
+        });
+        radius.bindTo('center', marker2, 'position');
+
+      id = navigator.geolocation.watchPosition(success, error, options);
+
+      function success(pos) {
+        const crd = pos.coords;
+        setCurrPos(crd);
+        map.setCenter({ lat: crd.latitude, lng: crd.longitude});
+        map.panTo({ lat: crd.latitude, lng: crd.longitude});
+        setCurrPos({ lat: crd.latitude, lng: crd.longitude});
+        var newCoordinates = new google.maps.LatLng(crd.latitude, crd.longitude);
+        marker2.setPosition(newCoordinates);
+        setRadiusMarker(radius);
+        radius.setRadius(settings.radius);
+      console.log("center has been set", crd)
+      axios.get(`${process.env.REACT_APP_BACKEND_URL}/events`, {
+        params: {
+          latitude: crd.latitude,
+          longitude: crd.longitude,
+          radius: settings.radius,
+        },
+        
+      })
+      .then(response => {
+        console.log("Success: ", response.data);
+    
+        return response.data;
+      })
+      .catch(error => {
+        console.error("Error: ", error);
+
+        throw error;
+      });
+
+
+
+
+        }
+
       async function advancedMarkerGenerator(){
         try {
         const {AdvancedMarkerElement}  =  await google.maps.importLibrary("marker");
+
+
         let markers = tempData.map(data =>{
+          
+
+          const options = {
+            root: null,
+            threshold: 0.5
+        };
+        
+        const callback = function(entries, observer) {
+             entries.forEach((entry) => {
+                console.log(entry.isIntersecting);
+             });
+        }
+        const target = document.getElementById(`Avatar${data.id}`);
+        
+        const observer = new IntersectionObserver(callback, options);
 
             function createElementforEach(title, time, description, photo, lat, lng, id){
              const root = document.createElement("div");
@@ -60,7 +193,7 @@ const Map = () => {
              </div>
              <div class="avatar__container">
              <div class="avatar rounded-circle">
-               <img src=${photo || "https://xsgames.co/randomusers/avatar.php?g=female"} class="rounded-circle" alt="Avatar"  />
+               <img src=${photo || "https://xsgames.co/randomusers/avatar.php?g=female"} id="Avatar${id}" class="rounded-circle" alt="Avatar"  />
              </div>
              </div>
            </div>`
@@ -157,6 +290,7 @@ const Map = () => {
   
   <>
     <UserMenu />
+    <Radius />
     <EventCards currID={currID} />
     <div ref={mapRef} className="map" >  </div>
     <NewsPanel map={currMap} />

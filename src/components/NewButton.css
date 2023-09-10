@@ -9,3 +9,7 @@
         transition: filter 0.3s;
     }
 }
+
+.modal-content{
+    background-color: transparent;
+}

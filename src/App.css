@@ -3,6 +3,7 @@
 }
 
 h1, h2, h3, h4, h5{
+  color:black;
   font-family: 'Libre Franklin', sans-serif;
   padding: 0;
   margin: 0;
@@ -17,7 +18,7 @@ h1, h2, h3, h4, h5{
   margin-left: auto;
   margin-right: auto;
   border: 8px solid #F6F9F9;
-  border-image: linear-gradient(to bottom, #cddad9, #F6F9F9, #F6F9F9, #F6F9F9  #cddad9) 1;
+  border-image: linear-gradient(to bottom, #cddad9, #F6F9F9, #F6F9F9, #F6F9F9  #dfedec) 1;
 }
 
 .form_container{
