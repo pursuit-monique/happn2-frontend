@@ -9,7 +9,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NewEvent from "./components/NewEvent";
 import Map from "./components/Map";
 import Card from "./components/Card";
-import Auth from "./components/Auth";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 import EventCardTest from "./components/EventCardTest";
 
 // import Markers from "./components/Marker
@@ -25,9 +26,11 @@ function App() {
     <BrowserRouter>
       <UserContext.Provider value={{ settings, setSettings }}>
         <Routes>
-          <Route path="/new" element={<NewEvent />} />
           <Route path="/" element={<Map />} />
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/login" element={<Login />} />
+
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/new" element={<NewEvent />} />
           <Route path="/card" element={<Card />} />
           <Route path="/test" element={<EventCardTest />} />
           {/* <Route path="/markers" element={<Markers />} /> */}
