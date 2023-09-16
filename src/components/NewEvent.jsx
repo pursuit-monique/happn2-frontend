@@ -108,9 +108,9 @@ export default function NewEvent(){
         <>
 
         <form onSubmit={handleSubmit}>
-              <div className="form_container row align-self-center">
-        <div class="card col border-0 shadow-lg m-4" style={{ width: "100%", height: "auto" }}>
-          <div class="card-body">
+              <div className="row form_container align-self-center">
+        <div class="col p-5 border-0 shadow-lg" style={{height: "auto" }}>
+          <div>
             <h3 class="card-title">
               {" "}
               <strong>Submit a New Event </strong>
@@ -154,7 +154,7 @@ export default function NewEvent(){
                     onChange={handleChange}
                   />
                 </div>
-                <div className="col-auto">
+                <div className="col-sm">
                   <label for="cause" class="form-label">
                     <strong>Cause</strong>
                   </label>
@@ -182,7 +182,7 @@ export default function NewEvent(){
                 onChange={handleChange}
               />
               <div className="row justify-content-between g-auto">
-                <div className="col-auto mb-2">
+                <div className="col-sm mb-2">
                   <label for="event-start" class="form-label my-3">
                     <strong>Event Start Time:</strong>
                   </label>

@@ -13,3 +13,9 @@
 .modal-content{
     background-color: transparent;
 }
+
+@media (max-width: 580px){
+    .NewButton{
+        bottom: 0px;
+    }
+}

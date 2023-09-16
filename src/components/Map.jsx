@@ -31,9 +31,9 @@ const Map = () => {
 
   const mapRef = useRef(null);
   let id;
-  
+  console.log("wasting cpu resources:", id);
     useEffect(()=>{
-      const nothing = "cat";
+
       console.log(radiusMarker)
       console.log(currPos)
       if (radiusMarker) 

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@100mslive/roomkit-react": "^0.1.5",
     "@100mslive/server-sdk": "^0.3.0",
     "@googlemaps/markerclusterer": "^2.4.0",
     "@googlemaps/react-wrapper": "^1.1.35",
