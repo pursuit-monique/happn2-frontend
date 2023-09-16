@@ -4,12 +4,15 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./css/custom.css";
 
 import { useState, createContext } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import NewEvent from "./components/NewEvent";
 import Map from "./components/Map";
 import Card from "./components/Card";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 import EventCardTest from "./components/EventCardTest";
+import { AuthProvider } from "./context/AuthContext";
 
 // import Markers from "./components/Marker
 export const UserContext = createContext(null);
@@ -21,19 +24,22 @@ function App() {
   });
 
   return (
-    <BrowserRouter>
-      {" "}
-      <UserContext.Provider value={{ settings, setSettings }}>
-        <Routes>
-          <Route path="/new" element={<NewEvent />} />
-          <Route path="/" element={<Map />} />
+    <AuthProvider>
+      <Router>
+        <UserContext.Provider value={{ settings, setSettings }}>
+          <Routes>
+            <Route path="/" element={<Map />} />
+            <Route path="/login" element={<Login />} />
 
-          <Route path="/card" element={<Card />} />
-          <Route path="/test" element={<EventCardTest />} />
-          {/* <Route path="/markers" element={<Markers />} /> */}
-        </Routes>
-      </UserContext.Provider>
-    </BrowserRouter>
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/new" element={<NewEvent />} />
+            <Route path="/card" element={<Card />} />
+            <Route path="/test" element={<EventCardTest />} />
+            {/* <Route path="/markers" element={<Markers />} /> */}
+          </Routes>
+        </UserContext.Provider>
+      </Router>
+    </AuthProvider>
   );
 }
 
