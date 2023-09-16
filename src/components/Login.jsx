@@ -20,14 +20,14 @@ export default function SignupLogin() {
       localStorage.setItem("user", JSON.stringify(firebaseUser));
       // console.log("firebaseUser in login", firebaseUser);
 
-      await axios.post(`${API}/users`, {
-        id: firebaseUser.uid,
-        email: firebaseUser.email,
-        f_name: firebaseUser.displayName.split(" ")[0],
-        l_name: firebaseUser.displayName.split(" ")[1],
-        user_profile_link: "",
-      });
-      navigate("/index");
+      //   await axios.post(`${API}/users`, {
+      //     id: firebaseUser.uid,
+      //     email: firebaseUser.email,
+      //     f_name: firebaseUser.displayName.split(" ")[0],
+      //     l_name: firebaseUser.displayName.split(" ")[1],
+      //     user_profile_link: "",
+      //   });
+      navigate("/");
     } catch (error) {
       console.log(error.message);
       alert(error.message);
@@ -42,7 +42,7 @@ export default function SignupLogin() {
       );
       localStorage.setItem("user", JSON.stringify(firebaseUser));
 
-      navigate("/index");
+      navigate("/");
     } catch (error) {
       console.log(error.message);
       alert(error.message);

@@ -25,14 +25,14 @@ function Signup() {
     );
     // console.log(firebaseUser);
     localStorage.setItem("user", JSON.stringify(firebaseUser));
-    await axios.post(`${API}/users`, {
-      id: firebaseUser.uid,
-      email: user.email,
-      f_name: user.f_name,
-      l_name: user.l_name,
-      user_profile_link: "https://i.pravatar.cc/300",
-    });
-    navigate("/index");
+    // await axios.post(`${API}/users`, {
+    //   id: firebaseUser.uid,
+    //   email: user.email,
+    //   f_name: user.f_name,
+    //   l_name: user.l_name,
+    //   user_profile_link: "https://i.pravatar.cc/300",
+    // });
+    navigate("/");
   }
 
   return (
