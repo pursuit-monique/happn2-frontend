@@ -1,29 +1,4 @@
-// import { initializeApp } from "firebase/app";
-// import { getAuth } from "firebase/auth";
-// import { getStorage } from "firebase/storage";
 
-// const firebaseConfig = {
-//   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-//   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-//   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-//   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-//   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-//   appId: process.env.REACT_APP_FIREBASE_APP_ID,
-// };
-
-// const app = initializeApp(firebaseConfig);
-
-// const auth = getAuth(app);
-// const storage = getStorage(app);
-// const db = getFirestore(app);
-
-// if (window.location.hostname === "localhost") {
-//   app.auth().useEmulator("http://localhost:9099");
-//   app.firestore().useEmulator("localhost", 8080);
-//   // Configure other emulators as needed
-// }
-
-// export { app, storage, auth, db, firebase as default };
 
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -36,6 +11,7 @@ const storageBucket = process.env.REACT_APP_FIREBASE_STORAGEBUCKET;
 const messagingSenderId = process.env.REACT_APP_FIREBASE_SENDERID;
 const appId = process.env.REACT_APP_FIREBASE_APPID;
 
+
 const firebaseConfig = {
   apiKey,
   authDomain,
@@ -47,6 +23,24 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+/////////////////////////////////////////
+const authByGoogle = (callback) => {
+  // 使用弹出窗口方式登录
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // 登录成功的处理
+      var user = result.user;
+      const { accessToken, uid, displayName, email } = user;
+      callback(accessToken);
+    })
+    .catch(function (error) {
+      // 错误处理
+      console.error(error);
+    });
+};
+
 
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);

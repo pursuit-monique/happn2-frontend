@@ -30,6 +30,14 @@ h1, h2, h3, h4, h5{
 
 @media (max-width: 500px ){
   .form_container{
-    grid-template-columns: auto;
+    display: inline;
+    grid-template-rows: auto;
+    grid-template-columns: 1fr;
+    width: 100vw;
+  }
+  .map{
+    width: 100vw;
+    margin: 0;
+    border: 0px solid black;
   }
 }
