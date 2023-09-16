@@ -13,11 +13,13 @@ export default function SignupLogin() {
   // const API = "https://happn.onrender.com";
   // const API = process.env.REACT_APP_LOCAL_BACKEND;
   console.log("backend", API);
+
   async function googleLogin() {
     try {
       const firebaseUser = await signInWithGoogle();
       localStorage.setItem("user", JSON.stringify(firebaseUser));
-      console.log("firebaseUser in login", firebaseUser);
+      // console.log("firebaseUser in login", firebaseUser);
+
       await axios.post(`${API}/users`, {
         id: firebaseUser.uid,
         email: firebaseUser.email,

@@ -23,7 +23,7 @@ function Signup() {
       user.email,
       user.password
     );
-    console.log(firebaseUser);
+    // console.log(firebaseUser);
     localStorage.setItem("user", JSON.stringify(firebaseUser));
     await axios.post(`${API}/users`, {
       id: firebaseUser.uid,
