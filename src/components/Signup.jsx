@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+
 import { Link, useNavigate } from "react-router-dom";
 import { registerWithEmailAndPassword } from "../firebase/auth";
 import cityscape from "../assets/cityscape.jpeg";
@@ -24,7 +24,7 @@ function Signup() {
       user.password
     );
     // console.log(firebaseUser);
-    localStorage.setItem("user", JSON.stringify(firebaseUser));
+    localStorage.setItem("user", JSON?.stringify(firebaseUser));
     // await axios.post(`${API}/users`, {
     //   id: firebaseUser.uid,
     //   email: user.email,

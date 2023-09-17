@@ -13,12 +13,10 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import EventCardTest from "./components/EventCardTest";
 import DirectionsMap from "./components/DirectionsMap";
-import LogIn from "./components/LogIn";
+// import LogIn from "./components/Login";
 import Main from "./components/video/Main";
 
 import { AuthProvider } from "./context/AuthContext";
-
-
 
 export const UserContext = createContext(null);
 function App() {
@@ -40,23 +38,22 @@ function App() {
             <Route path="/" element={<Map />} />
             <Route path="/login" element={<Login />} />
 
-
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/card" element={<Card />} />
-          <Route path="/test" element={<EventCardTest />} />
-          <Route path="/directions" element={<DirectionsMap />} />
-          <Route path="/login" element={<LogIn />} />
-          <Route
-            path="/video"
-            element={
-              <Main
-              // firstname={firstname || "Jane"}
-              // lastname={lastname || "Doe"}
-              // roomCode={roomCode || "sjhsjsj"}
-              // roomType={roomType || "Generic"}
-              />
-            }
-          />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/card" element={<Card />} />
+            <Route path="/test" element={<EventCardTest />} />
+            <Route path="/directions" element={<DirectionsMap />} />
+            {/* <Route path="/login" element={<LogIn />} /> */}
+            <Route
+              path="/video"
+              element={
+                <Main
+                // firstname={firstname || "Jane"}
+                // lastname={lastname || "Doe"}
+                // roomCode={roomCode || "sjhsjsj"}
+                // roomType={roomType || "Generic"}
+                />
+              }
+            />
           </Routes>
         </UserContext.Provider>
       </Router>

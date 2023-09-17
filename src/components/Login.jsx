@@ -110,7 +110,7 @@ export default function SignupLogin() {
             </div>
           </div>
           <div className="line"></div>
-          {/* <div className="media-options"> 
+          {/* <div className="media-options"> 
           <a href="#" className="field facebook">
             <i className="bx bxl-facebook facebook-icon"></i>
             <span>Login with Facebook</span>
