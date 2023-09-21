@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { logout } from "../firebase/auth";
 import "./UserMenu.css";
 
 const UserMenu = () => {
@@ -11,6 +10,7 @@ const UserMenu = () => {
     dropdownToggle.addEventListener("click", () => {
       dropdownMenu.classList.toggle("show");
     });
+
 
     document.addEventListener("click", (e) => {
       if (
@@ -29,7 +29,7 @@ const UserMenu = () => {
         className="Avatar"
         alt="Avatar"
         id="ImageDropdownToggle"
-        data-bs-toggle="dropdown"
+        data-bs-toggle="dropdown" 
       />
       <ul
         className="dropdown-menu dropdown-menu-dark UserMenu__bg"
@@ -39,15 +39,12 @@ const UserMenu = () => {
         <li>
           <Link to="/new" className="dropdown-item active">
             New Event
-          </Link>
+            </Link>
         </li>
         <li>
-          <Link to="/user" className="dropdown-item">
+        <Link to="/user" className="dropdown-item" >
             User Info
           </Link>
-        </li>
-        <li className="dropdown-item" onClick={logout}>
-          <span> Logout</span>
         </li>
         <li>
           <a className="dropdown-item" href="#">

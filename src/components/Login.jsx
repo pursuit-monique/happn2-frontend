@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithGoogle, logInWithEmailAndPassword } from "../firebase/auth";
 import cityscape from "../assets/cityscape.jpeg";

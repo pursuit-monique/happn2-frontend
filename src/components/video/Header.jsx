@@ -19,7 +19,7 @@ function Header() {
 			{isConnected && (
 				<button
 					id="leave-btn"
-					className="btn-danger"
+					className="btn-danger btn text-white"
 					onClick={() => hmsActions.leave()}
 				>
 					Leave Room

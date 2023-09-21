@@ -30,12 +30,9 @@ const Map = () => {
   const [currPos, setCurrPos] = useState();
 
   const mapRef = useRef(null);
-  let id;
-  console.log("wasting cpu resources:", id);
+  let id = useRef(null);
+  console.log("wasting cpu resources:", id.current);
     useEffect(()=>{
-
-      console.log(radiusMarker)
-      console.log(currPos)
       if (radiusMarker) 
       {radiusMarker.setRadius(settings.radius);
         axios.get(`${process.env.REACT_APP_BACKEND_URL}/events`, {
@@ -123,7 +120,7 @@ const Map = () => {
         });
         radius.bindTo('center', marker2, 'position');
 
-      id = navigator.geolocation.watchPosition(success, error, options);
+      id.current = navigator.geolocation.watchPosition(success, error, options);
 
       function success(pos) {
         const crd = pos.coords;
@@ -168,19 +165,19 @@ const Map = () => {
         let markers = tempData.map(data =>{
           
 
-          const options = {
-            root: null,
-            threshold: 0.5
-        };
+        //   const options = {
+        //     root: null,
+        //     threshold: 0.5
+        // };
         
-        const callback = function(entries, observer) {
-             entries.forEach((entry) => {
-                console.log(entry.isIntersecting);
-             });
-        }
-        const target = document.getElementById(`Avatar${data.id}`);
+        // const callback = function(entries, observer) {
+        //      entries.forEach((entry) => {
+        //         console.log(entry.isIntersecting);
+        //      });
+        // }
+        // const target = document.getElementById(`Avatar${data.id}`);
         
-        const observer = new IntersectionObserver(callback, options);
+        // const observer = new IntersectionObserver(callback, options);
 
             function createElementforEach(title, time, description, photo, lat, lng, id){
              const root = document.createElement("div");

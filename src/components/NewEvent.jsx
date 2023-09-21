@@ -2,6 +2,16 @@
 import { useRef, useEffect, useState } from "react";
 import axios from "axios";
 
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+
+import { storage } from "../firebase/firebase";
+import { v4 } from "uuid";
+// import 'firebase/storage'; 
+
 
 export default function NewEvent(){
   const backend = process.env.REACT_APP_BACKEND_URL;
@@ -11,6 +21,8 @@ export default function NewEvent(){
     const [loading, setLoading] = useState(false);
     const [formValid, setFormValid] = useState(false);
     const [response, setResponse] = useState(null);
+    const imageUpload = useRef(null);
+
 
     const [currEvent, setEvent] = useState({
       name: "",
@@ -29,6 +41,34 @@ export default function NewEvent(){
       tags: ["2892898"]
     });
 
+    const handleFileChange = (e) => {
+      imageUpload.current = e.target.files[0];
+      console.log(imageUpload);
+    };
+
+    function handleUpload(){
+        const storageRef = ref(storage, `${imageUpload.current.name + v4()}`);
+        // const imageRef = storageRef.child(imageUpload.current.name);
+  
+        uploadBytes(storageRef, imageUpload.current).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((url) => {
+            console.log(url)
+            setEvent({...currEvent, 'picture': url});
+            // return url;
+          });
+        });
+      };
+    // const handleUpload = () => {
+    //     if (imageUpload == null) return;
+    //     const imageRef = ref(storage, `images/${imageUpload.current.name + v4()}`);
+    //     uploadBytes(imageRef, imageUpload.current).then((snapshot) => {
+    //       console.log(snapshot)
+    //       // getDownloadURL(snapshot.ref).then((url) => {
+    //       //   // setImageUrls((prev) => [...prev, url]);
+    //       //   console.log(url)
+    //       // });
+    //     });
+    //   };
     function isFormValid(currEvent) {
       return (
         currEvent.name.trim() !== "" &&
@@ -72,24 +112,35 @@ export default function NewEvent(){
     //   .substr(0, 19);
 
 
-      function handleSubmit(event) {
-        event.preventDefault();
-        setLoading(true);
-        console.log(currEvent)
-        if (formValid) {
-          console.log("Backend URL:", backend);
-          axios.post(`${backend}/events`, currEvent)
-          .then((response) => {
-            setResponse(response.data);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error(error);
-          });console.log("Form submitted!");
-        } else {
-          console.log("Form is not valid. Cannot submit.");
+    async function handleSubmit(event) {
+      event.preventDefault();
+      setLoading(true);
+    
+      if (formValid) {
+        try {
+          // Call the handleUpload function
+          handleUpload();
+          // console.log(img)
+          // Update the 'picture' property of currEvent with the uploaded image
+          // const updatedEvent = { ...currEvent, picture: img };
+          // console.log(updatedEvent)
+    
+          // Make a POST request to the backend
+          const response = await axios.post(`${backend}/events`, currEvent);
+    
+          // Update the response data and loading state
+          setResponse(response.data);
+          setLoading(false);
+        } catch (error) {
+          console.error(error);
+          setLoading(false);
         }
-            }
+      } else {
+        console.log("Form is not valid. Cannot submit.");
+        setLoading(false);
+      }
+    }
+    
 
       function handleChange(event){
         const { id, value, type } = event.target;
@@ -97,7 +148,7 @@ export default function NewEvent(){
           ...prevData,
           [id]: type === "file" ? event.target.files[0] : value,
         }));
-  setFormValid(isFormValid({ ...currEvent, [id]: value }));
+        setFormValid(isFormValid({ ...currEvent, [id]: value }));
       }
 
 
@@ -109,7 +160,7 @@ export default function NewEvent(){
 
         <form onSubmit={handleSubmit}>
               <div className="row form_container align-self-center">
-        <div class="col p-5 border-0 shadow-lg" style={{height: "auto" }}>
+        <div class="col p-4 m-4 border-0 shadow-lg bg-light rounded-4" style={{height: "auto"}}>
           <div>
             <h3 class="card-title">
               {" "}
@@ -137,7 +188,7 @@ export default function NewEvent(){
                   class="form-control focus-ring focus-ring-info py-1 px-2 text-decoration-none border rounded-2"
                   type="file"
                   id="picture"
-                  onChange={handleChange}
+                  onChange={handleFileChange}
                 />
               </div>
 

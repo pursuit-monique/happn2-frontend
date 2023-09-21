@@ -17,7 +17,7 @@ function Signup() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const API = process.env.REACT_APP_BACKEND_URL;
+    // const API = process.env.REACT_APP_BACKEND_URL;
     const firebaseUser = await registerWithEmailAndPassword(
       user.name,
       user.email,
