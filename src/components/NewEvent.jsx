@@ -17,7 +17,6 @@ export default function NewEvent(){
   const backend = process.env.REACT_APP_BACKEND_URL;
     const autoCompleteRef = useRef();
     const inputRef = useRef();
-// TODO: loading logic
     const [loading, setLoading] = useState(false);
     const [formValid, setFormValid] = useState(false);
     const [response, setResponse] = useState(null);
@@ -37,8 +36,8 @@ export default function NewEvent(){
       organization_id: 1,
       cause_id: 1,
       type_id: 1,
-      locale_info: "hnshsgsh",
-      tags: ["2892898"]
+      locale_info: "",
+      tags: ""
     });
 
     const handleFileChange = (e) => {
@@ -46,18 +45,27 @@ export default function NewEvent(){
       console.log(imageUpload);
     };
 
-    function handleUpload(){
-        const storageRef = ref(storage, `${imageUpload.current.name + v4()}`);
-        // const imageRef = storageRef.child(imageUpload.current.name);
-  
-        uploadBytes(storageRef, imageUpload.current).then((snapshot) => {
-          getDownloadURL(snapshot.ref).then((url) => {
-            console.log(url)
-            setEvent({...currEvent, 'picture': url});
-            // return url;
-          });
-        });
-      };
+    async function handleUpload() {
+      if (!imageUpload.current) {
+        console.log("No file selected");
+        return;
+      }
+    
+      const storageRef = ref(storage, `${imageUpload.current.name + v4()}`);
+    
+      try {
+        // Upload the file and wait for the upload to complete
+        const snapshot = await uploadBytes(storageRef, imageUpload.current);
+        
+        // Get the download URL and set the picture state
+        const url = await getDownloadURL(snapshot.ref);
+        return url;
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
+
+
     // const handleUpload = () => {
     //     if (imageUpload == null) return;
     //     const imageRef = ref(storage, `images/${imageUpload.current.name + v4()}`);
@@ -76,7 +84,7 @@ export default function NewEvent(){
         currEvent.about.trim() !== "" &&
         currEvent.address.trim() !== "" &&
         currEvent.start_date !== "" &&
-        currEvent.end_date !== ""
+        currEvent.end_date !== "" 
       );
     }
 
@@ -84,7 +92,7 @@ export default function NewEvent(){
   
     const options = {
       componentRestrictions: { country: "us"},
-      fields: ["address_components", "geometry", "icon", "name"],
+      fields: ["address_components", "geometry", "name", "place_id", "type"],
     };
     useEffect(() => {
       autoCompleteRef.current = new window.google.maps.places.Autocomplete(
@@ -100,16 +108,12 @@ export default function NewEvent(){
           address: `${place?.address_components[0].long_name} ${place?.address_components[1].long_name}, ${place.address_components[3].long_name === "Brooklyn" || place.address_components[3].long_name === "Bronx" || place.address_components[3].long_name === "Manhattan" ? place?.address_components[3].long_name : place?.address_components[2].long_name}, ${place?.address_components[5]?.short_name}. ${place?.address_components[7]?.short_name}-${place?.address_components[8]?.short_name}`,
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
+          'locale_info': place.place_id,
+          'tags': [place.name, ...place.types]
         }));
       });
     }, );
 
-    // const today = new Date();
-    // const todayFormatted = new Date().toISOString().substr(0, 19);
-  
-    // const maxDate = new Date(today.getTime() + 2629800000)
-    //   .toISOString()
-    //   .substr(0, 19);
 
 
     async function handleSubmit(event) {
@@ -118,19 +122,17 @@ export default function NewEvent(){
     
       if (formValid) {
         try {
-          // Call the handleUpload function
-          handleUpload();
-          // console.log(img)
-          // Update the 'picture' property of currEvent with the uploaded image
-          // const updatedEvent = { ...currEvent, picture: img };
-          // console.log(updatedEvent)
+          handleUpload().then((res) =>{
     
-          // Make a POST request to the backend
-          const response = await axios.post(`${backend}/events`, currEvent);
+
+            axios.post(`${backend}/events`, { ...currEvent, 'picture': res }).then(dbres => {
+
+            console.log(dbres.data);
+            setResponse(dbres.data);
+            setLoading(false);
+            })
     
-          // Update the response data and loading state
-          setResponse(response.data);
-          setLoading(false);
+        })
         } catch (error) {
           console.error(error);
           setLoading(false);
@@ -301,9 +303,7 @@ export default function NewEvent(){
             <p class="card-text">{response.response}</p>
             <button class="btn btn-primary text-light" type="submit">Reset</button>
           </div>
-          {/* <div class="card-footer text-body-secondary">
-          
-          </div> */}
+
         </div> : null }
 
 

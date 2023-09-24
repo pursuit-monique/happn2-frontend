@@ -43,6 +43,12 @@ const Radius = () =>
     >
       10m
     </li>
+    <li
+      className={`dropdown-item ${settings.radius / 1609.34 === 15 ? 'active' : ''}`}
+      onClick={() => updateSettingsAndLog(settings, setSettings, { radius: 15 * 1609.34 })}
+    >
+      15m
+    </li>
   </ul>
 </div>
         </>

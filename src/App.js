@@ -17,6 +17,7 @@ import DirectionsMap from "./components/DirectionsMap";
 // import LogIn from "./components/Login";
 import Main from "./components/video/Main";
 
+import Index from "./components/Index";
 import { AuthProvider } from "./context/AuthContext";
 
 export const UserContext = createContext(null);
@@ -41,12 +42,13 @@ function App() {
             <Route path="/logintest" element={<LogInTest />} />
             {/* <Route path="/signup" element={<Signup />} /> */}
             <Route path="/card" element={<Card />} />
-            <Route path="/test" element={<EventCardTest />} />
+            <Route path="/test/:id" element={<EventCardTest />} />
             <Route path="/directions" element={<DirectionsMap />} />
             <Route path="/video" element={<Main />} />
             <Route path="/new" element={<NewEvent />} />
+            <Route path="/index" element={<Index />} />
             <Route
-              path="/video"
+              path="/video/:roomID"
               element={
                 <Main
                 // firstname={firstname || "Jane"}

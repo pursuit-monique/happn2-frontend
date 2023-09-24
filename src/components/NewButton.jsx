@@ -2,6 +2,7 @@ import './NewButton.css';
 
 import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
+import NewEvent from './NewEvent';
 
 
 
@@ -43,7 +44,7 @@ const NewButton = () => {
           contentClassName="custom-modal-content"
           backdropClassName="custom-modal-backdrop">
             <div className="align-self-center">
-        <div class="card border-0 shadow-lg m-4" style={{ width: "50vw", height: "auto"}}>
+        {/* <div class="card border-0 shadow-lg m-4" style={{ width: "50vw", height: "auto"}}>
           <div class="card-body">
           <div className="modal-header border-0 p-0 m-0">
         <h3 className="modal-title">
@@ -166,7 +167,8 @@ const NewButton = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
+        <NewEvent />
       </div>
       </Modal>
     

@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function DirectionsMap() {
+function DirectionsMap({lat, lng}) {
   const directionsService = useRef(new window.google.maps.DirectionsService());
   const directionsRenderer = useRef(new window.google.maps.DirectionsRenderer());
 
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
+  const [start, setStart] = useState(null); // Use null for user's location
+  const [end, setEnd] = useState({ lat: 40.7128, lng: -74.0060 }); // Default destination (New York City)
+  const [travelMode, setTravelMode] = useState('DRIVING'); // Default travel mode
+  const [directions, setDirections] = useState(null);
+  const [travelTime, setTravelTime] = useState(null);
 
   useEffect(() => {
     const map = new window.google.maps.Map(document.getElementById("map"), {
@@ -14,40 +17,65 @@ function DirectionsMap() {
     });
 
     directionsRenderer.current.setMap(map);
+    directionsRenderer.current.setPanel(document.getElementById("directions-panel"));
 
-    const startInput = document.getElementById("start");
-    const endInput = document.getElementById("end");
 
-    startInput.addEventListener("change", handleInputChange);
-    endInput.addEventListener("change", handleInputChange);
+  }, []);
 
-    return () => {
-      startInput.removeEventListener("change", handleInputChange);
-      endInput.removeEventListener("change", handleInputChange);
-    };
+  useEffect(() => {
+    // Get the user's current location using navigator.geolocation
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setStart({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    } else {
+      // Handle the case where geolocation is not available or denied
+      console.error("Geolocation is not available.");
+    }
   }, []);
 
   const handleInputChange = () => {
-    setStart(document.getElementById("start").value);
-    setEnd(document.getElementById("end").value);
+    setEnd({
+      'lat': lat,
+      'lng': lng,
+    });
+  };
+
+  const handleTravelModeChange = (event) => {
+    setTravelMode(event.target.value);
   };
 
   useEffect(() => {
     calculateAndDisplayRoute();
-  }, [start, end]);
+  }, [start, end, travelMode]);
 
   const calculateAndDisplayRoute = () => {
+    if (!start || !end) return;
+
     directionsService.current.route({
-      origin: {
-        query: start,
-      },
+      origin: start,
       destination: {
-        query: end,
+        'lat': lat,
+        'lng': lng,
       },
-      travelMode: window.google.maps.TravelMode.DRIVING,
+      travelMode: travelMode,
     })
     .then((response) => {
       directionsRenderer.current.setDirections(response);
+      setDirections(response);
+      const route = response.routes[0];
+      if (route && route.legs && route.legs[0] && route.legs[0].duration) {
+        const steps = route.legs[0].steps;
+        console.log(steps)
+        setTravelTime(route.legs[0].duration.text);
+        console.log(travelTime)
+        console.log(directions)
+      } else {
+        setTravelTime(null);
+      }
     })
     .catch((error) => {
       window.alert("Directions request failed due to " + error.status);
@@ -55,42 +83,25 @@ function DirectionsMap() {
   };
 
   return (
-    <div>
-        <div id="floating-panel">
-      <b>Start: </b>
-      <select id="start">
-        <option value="chicago, il">Chicago</option>
-        <option value="st louis, mo">St Louis</option>
-        <option value="joplin, mo">Joplin, MO</option>
-        <option value="oklahoma city, ok">Oklahoma City</option>
-        <option value="amarillo, tx">Amarillo</option>
-        <option value="gallup, nm">Gallup, NM</option>
-        <option value="flagstaff, az">Flagstaff, AZ</option>
-        <option value="winona, az">Winona</option>
-        <option value="kingman, az">Kingman</option>
-        <option value="barstow, ca">Barstow</option>
-        <option value="san bernardino, ca">San Bernardino</option>
-        <option value="los angeles, ca">Los Angeles</option>
-      </select>
-      <b>End: </b>
-      <select id="end">
-        <option value="chicago, il">Chicago</option>
-        <option value="st louis, mo">St Louis</option>
-        <option value="joplin, mo">Joplin, MO</option>
-        <option value="oklahoma city, ok">Oklahoma City</option>
-        <option value="amarillo, tx">Amarillo</option>
-        <option value="gallup, nm">Gallup, NM</option>
-        <option value="flagstaff, az">Flagstaff, AZ</option>
-        <option value="winona, az">Winona</option>
-        <option value="kingman, az">Kingman</option>
-        <option value="barstow, ca">Barstow</option>
-        <option value="san bernardino, ca">San Bernardino</option>
-        <option value="los angeles, ca">Los Angeles</option>
-      </select>
-    </div>
-      <input id="start" type="text" placeholder="Start Location" />
-      <input id="end" type="text" placeholder="End Location" />
-      <div id="map" style={{ height: "400px", width: "100%" }}></div>
+    <div className="row">
+      <div id="floating-panel">
+        <b>Travel Mode: </b>
+        <select value={travelMode} onChange={handleTravelModeChange}>
+          <option value="DRIVING">Driving</option>
+          <option value="WALKING">Walking</option>
+          <option value="BICYCLING">Bicycling</option>
+          <option value="TRANSIT">Transit</option>
+        </select>
+      </div>
+      <div className="col-xl order-1" id="map" style={{ height: "400px", width: "100%", float: "left" }}></div>
+      <div className='col-sm bg-light order-2' id="directions-panel"  style={{ height: "400px", width: "100%", float: "left", overflow: "auto" }}>
+        {directions && (
+          <div>
+            <h3>Directions</h3>
+            <p>Travel Time: {travelTime}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

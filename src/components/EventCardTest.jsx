@@ -1,17 +1,32 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
+import {
+  DirectionsRenderer,
+  DirectionsService,
+  GoogleMap,
+} from '@react-google-maps/api'
+import { Wrapper } from "@googlemaps/react-wrapper";
+
+
 import axios from "axios";
 import "./EventCardTest.css";
 import { reauthenticateWithCredential } from "firebase/auth";
 import { useContext } from "react";
+import { useParams } from 'react-router-dom';
+
+import DirectionsMap from "./DirectionsMap";
 
 import { UserContext } from "../App";
 
 export default function EventCardTest(){
-const {settings, setSettings} = useContext(UserContext);
-const [ broadcasts, setBroadcasts] = useState([]);
-const [state, setState] = useState([])
-
+  const {id} = useParams();
+  const {settings, setSettings} = useContext(UserContext);
+  const [ broadcasts, setBroadcasts] = useState([]);
+  const [currEvent, setCurrEvent] = useState([]);
+  const [state, setState] = useState([]);
+console.log(DirectionsRenderer)
+console.log(DirectionsService)
 // useEffect
 function onViewBroadcast(broadcast){
     setSettings({...settings, "firstname": "Mitsurugi", "lastname": "Mitsurugi", "roomCode": broadcast.room_codes.moderator, "roomType": "Moderator"})
@@ -28,15 +43,83 @@ function onViewBroadcast(broadcast){
             console.error('Error fetching data:', error);
           });
       }, []);
+      function formatDateRange(startDateStr, endDateStr) {
+        // Create Date objects from the input strings
+        const startDate = new Date(startDateStr);
+        const endDate = new Date(endDateStr);
+        const currentDate = new Date();
       
+        // Define months and days arrays for formatting
+        const months = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      
+        // Function to format a date
+        function formatSingleDate(date) {
+          const year = date.getFullYear();
+          const month = months[date.getMonth()];
+          const day = date.getDate();
+          const dayOfWeek = days[date.getDay()];
+          const hours = date.getHours();
+          const minutes = date.getMinutes();
+          const seconds = date.getSeconds();
+      
+          const formattedDate = `${dayOfWeek}, ${month} ${day}, ${year}`;
+          const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+          return `${formattedDate} ${formattedTime}`;
+        }
+      
+        // Format the start and end dates
+        const formattedStartDate = formatSingleDate(startDate);
+        const formattedEndDate = formatSingleDate(endDate);
+      
+        // Check if the current date is between the start and end dates
+        const isCurrentDateBetween = currentDate >= startDate && currentDate <= endDate;
+      
+        // Create and return the result object
+        const result = {
+          start: formattedStartDate,
+          end: formattedEndDate,
+          is_between: isCurrentDateBetween
+        };
+      
+        return result;
+      }
+      
+      
+    const {start, end, is_between} = formatDateRange(currEvent.start_date, currEvent.end_date);
+      useEffect( () => {
+        
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/events/one`, {
+            params: {
+              latitude: 40,
+              longitude: 30,
+              'id':id
+            //   settings.radius
+            },
+    
+          })
+          .then(response => {
+            console.log(response.data)
+            setCurrEvent(response.data)
+          })
+          .catch(error => {
+            console.error("Error: ", error);
+    
+            throw error;
+          });
+    }, [settings.radius])
 
     return(
     <>
         <div className="container-fluid p-0 m-0">
             <div className="row bg-light bg-gradient w-100 m-0 p-4 border-bottom border-secondary border-2">
                 <div className="col-auto">
-                    <h2 className="m-0 p-0"><strong>Title of event</strong></h2>
-                    <h4>Subtitle</h4>
+                    <h2 className="m-0 p-0"><strong>{currEvent.name}</strong></h2>
+                    <h4>{currEvent.info}</h4>
                 </div>
 
     {/* Create a separate component for just ID/avatar */}
@@ -45,7 +128,7 @@ function onViewBroadcast(broadcast){
                         <div className="row">
                             <div className="col-auto"> 
                                 <img
-        src="https://xsgames.co/randomusers/avatar.php?g=female"
+        src={"https://xsgames.co/randomusers/avatar.php?g=female"}
         className="rounded-circle mt-2 align-middle border border-2 border-info"
         alt="Avatar"
         id="ImageDropdownToggle"
@@ -56,9 +139,9 @@ function onViewBroadcast(broadcast){
       </div>
     </div>
             <div className="row bg-gradient w-100 h-50 ShowPage_SideMargin">
-                <div className="col-xl m-0 p-0"><img className="object-fit-cover ShowPage__TopMargin p-0 w-100 bg-gradient ShowPage_Image" src="https://nycommonpantry.org/wp-content/uploads/2021/12/DSC_1242-Edit-Edit-Edit_R01-scaled.jpeg"  alt="" style={{width: "48%"}}/>
-                <img className="m-0  p-0 bg-gradient ShowPage_Image ShowPage_GoogleImages" src={`https://maps.googleapis.com/maps/api/streetview?size=400x400&location=47.5763831,-122.4211769
-&fov=80&heading=70&pitch=0&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}  alt="" /> <img className="m-0 p-0 bg-gradient ShowPage_Image ShowPage_GoogleImages" src={`https://maps.googleapis.com/maps/api/staticmap?center=40.714728,-73.998672&format=gif&zoom=14&size=400x400&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}  alt="" />
+                <div className="col-xl m-0 p-0"><img className="object-fit-cover ShowPage__TopMargin p-0 w-100 bg-gradient ShowPage_Image" src={currEvent.picture}  alt="" style={{width: "48%"}}/>
+                <img className="m-0  p-0 bg-gradient ShowPage_Image ShowPage_GoogleImages" src={`https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${currEvent.lat},${currEvent.lng}
+&fov=80&heading=70&pitch=0&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}  alt="" /> <img className="m-0 p-0 bg-gradient ShowPage_Image ShowPage_GoogleImages" src={`https://maps.googleapis.com/maps/api/staticmap?center=${currEvent.lat},${currEvent.lng}&zoom=12&size=400x400&maptype=roadmap&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}  alt="" />
                 </div>
                 <div className="col-sm p-0 ShowPage__TopMargin">                
                 <div className="card text-center shadow ShowPage__Information">
@@ -67,9 +150,9 @@ function onViewBroadcast(broadcast){
                         {/* <h6 className="card-subtitle mb-2 text-body-secondary">Time</h6> */}
                         <p className="card-text"> 
                              <ul className="list-group list-group-flush">
-                                <li className="list-group-item">Address</li>
-                                <li className="list-group-item">Date Time</li>
-                                <li className="list-group-item">Distance away</li>
+                                <li className="list-group-item">{currEvent.address}</li>
+                                <li className="list-group-item">{start}, {end}</li>
+                                <li className="list-group-item">{currEvent.distance_miles} mi away</li>
                             </ul>
                         </p>
                     </div>
@@ -85,8 +168,8 @@ Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit du
                     </div>
                     <div className="card text-center shadow ShowPage__Information h-auto">
                     <div className="card-body">
-                        <h5 className="card-title">Card title</h5>
-                        <h6 className="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+                        <h5 className="card-title">{is_between? "This event is ongoing!" : "This isn't currently happn"}</h5>
+                        <h6 className="card-subtitle mb-2 text-body-secondary">{currEvent.distance_miles > 0.5 ? "...But you're too far away" : "...and you're ready to get started!"}</h6>
                         <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                         <div className="btn-group shadow" role="group" aria-label="Basic mixed styles example">
   <button type="button" className="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-alt-fill" viewBox="0 0 16 16">
@@ -111,7 +194,7 @@ Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit du
 
 </div>
 
-            <div className="bg-light h-50 w-100"><img className="img-fluid w-100 h-25" src="https://blogbysid.files.wordpress.com/2013/09/gray-google-map.jpg?w=640" alt="map" /></div>
+<Wrapper apiKey={process.env.REACT_APP_GOOGLE_API_KEY}><div className="bg-light h-50 w-100"><DirectionsMap lat={currEvent.lat} lng={currEvent.lng} /></div>  </Wrapper>
 
     </div>
 
