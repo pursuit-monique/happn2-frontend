@@ -2,15 +2,26 @@
 import { useRef, useEffect, useState } from "react";
 import axios from "axios";
 
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+
+import { storage } from "../firebase/firebase";
+import { v4 } from "uuid";
+// import 'firebase/storage'; 
+
 
 export default function NewEvent(){
   const backend = process.env.REACT_APP_BACKEND_URL;
     const autoCompleteRef = useRef();
     const inputRef = useRef();
-// TODO: loading logic
     const [loading, setLoading] = useState(false);
     const [formValid, setFormValid] = useState(false);
     const [response, setResponse] = useState(null);
+    const imageUpload = useRef(null);
+
 
     const [currEvent, setEvent] = useState({
       name: "",
@@ -25,10 +36,47 @@ export default function NewEvent(){
       organization_id: 1,
       cause_id: 1,
       type_id: 1,
-      locale_info: "hnshsgsh",
-      tags: ["2892898"]
+      locale_info: "",
+      tags: ""
     });
 
+    const handleFileChange = (e) => {
+      imageUpload.current = e.target.files[0];
+      console.log(imageUpload);
+    };
+
+    async function handleUpload() {
+      if (!imageUpload.current) {
+        console.log("No file selected");
+        return;
+      }
+    
+      const storageRef = ref(storage, `${imageUpload.current.name + v4()}`);
+    
+      try {
+        // Upload the file and wait for the upload to complete
+        const snapshot = await uploadBytes(storageRef, imageUpload.current);
+        
+        // Get the download URL and set the picture state
+        const url = await getDownloadURL(snapshot.ref);
+        return url;
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
+
+
+    // const handleUpload = () => {
+    //     if (imageUpload == null) return;
+    //     const imageRef = ref(storage, `images/${imageUpload.current.name + v4()}`);
+    //     uploadBytes(imageRef, imageUpload.current).then((snapshot) => {
+    //       console.log(snapshot)
+    //       // getDownloadURL(snapshot.ref).then((url) => {
+    //       //   // setImageUrls((prev) => [...prev, url]);
+    //       //   console.log(url)
+    //       // });
+    //     });
+    //   };
     function isFormValid(currEvent) {
       return (
         currEvent.name.trim() !== "" &&
@@ -36,7 +84,7 @@ export default function NewEvent(){
         currEvent.about.trim() !== "" &&
         currEvent.address.trim() !== "" &&
         currEvent.start_date !== "" &&
-        currEvent.end_date !== ""
+        currEvent.end_date !== "" 
       );
     }
 
@@ -44,7 +92,7 @@ export default function NewEvent(){
   
     const options = {
       componentRestrictions: { country: "us"},
-      fields: ["address_components", "geometry", "icon", "name"],
+      fields: ["address_components", "geometry", "name", "place_id", "type"],
     };
     useEffect(() => {
       autoCompleteRef.current = new window.google.maps.places.Autocomplete(
@@ -60,36 +108,41 @@ export default function NewEvent(){
           address: `${place?.address_components[0].long_name} ${place?.address_components[1].long_name}, ${place.address_components[3].long_name === "Brooklyn" || place.address_components[3].long_name === "Bronx" || place.address_components[3].long_name === "Manhattan" ? place?.address_components[3].long_name : place?.address_components[2].long_name}, ${place?.address_components[5]?.short_name}. ${place?.address_components[7]?.short_name}-${place?.address_components[8]?.short_name}`,
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
+          'locale_info': place.place_id,
+          'tags': [place.name, ...place.types]
         }));
       });
     }, );
 
-    // const today = new Date();
-    // const todayFormatted = new Date().toISOString().substr(0, 19);
-  
-    // const maxDate = new Date(today.getTime() + 2629800000)
-    //   .toISOString()
-    //   .substr(0, 19);
 
 
-      function handleSubmit(event) {
-        event.preventDefault();
-        setLoading(true);
-        console.log(currEvent)
-        if (formValid) {
-          console.log("Backend URL:", backend);
-          axios.post(`${backend}/events`, currEvent)
-          .then((response) => {
-            setResponse(response.data);
+    async function handleSubmit(event) {
+      event.preventDefault();
+      setLoading(true);
+    
+      if (formValid) {
+        try {
+          handleUpload().then((res) =>{
+    
+
+            axios.post(`${backend}/events`, { ...currEvent, 'picture': res }).then(dbres => {
+
+            console.log(dbres.data);
+            setResponse(dbres.data);
             setLoading(false);
-          })
-          .catch((error) => {
-            console.error(error);
-          });console.log("Form submitted!");
-        } else {
-          console.log("Form is not valid. Cannot submit.");
+            })
+    
+        })
+        } catch (error) {
+          console.error(error);
+          setLoading(false);
         }
-            }
+      } else {
+        console.log("Form is not valid. Cannot submit.");
+        setLoading(false);
+      }
+    }
+    
 
       function handleChange(event){
         const { id, value, type } = event.target;
@@ -97,7 +150,7 @@ export default function NewEvent(){
           ...prevData,
           [id]: type === "file" ? event.target.files[0] : value,
         }));
-  setFormValid(isFormValid({ ...currEvent, [id]: value }));
+        setFormValid(isFormValid({ ...currEvent, [id]: value }));
       }
 
 
@@ -109,7 +162,7 @@ export default function NewEvent(){
 
         <form onSubmit={handleSubmit}>
               <div className="row form_container align-self-center">
-        <div class="col p-5 border-0 shadow-lg" style={{height: "auto" }}>
+        <div class="col p-4 m-4 border-0 shadow-lg bg-light rounded-4" style={{height: "auto"}}>
           <div>
             <h3 class="card-title">
               {" "}
@@ -137,7 +190,7 @@ export default function NewEvent(){
                   class="form-control focus-ring focus-ring-info py-1 px-2 text-decoration-none border rounded-2"
                   type="file"
                   id="picture"
-                  onChange={handleChange}
+                  onChange={handleFileChange}
                 />
               </div>
 
@@ -250,9 +303,7 @@ export default function NewEvent(){
             <p class="card-text">{response.response}</p>
             <button class="btn btn-primary text-light" type="submit">Reset</button>
           </div>
-          {/* <div class="card-footer text-body-secondary">
-          
-          </div> */}
+
         </div> : null }
 
 

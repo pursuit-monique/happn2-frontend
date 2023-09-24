@@ -9,10 +9,16 @@ import {
   useHMSActions,
   useHMSStore
 } from "@100mslive/react-sdk";
+import { useContext } from "react";
+
+import { UserContext } from "../../App";
 
 export default function Main({firstname, lastname, roomCode, roomType}) {
   const isConnected = useHMSStore(selectIsConnectedToRoom);
   const hmsActions = useHMSActions();
+  const {settings} = useContext(UserContext);
+
+
 
   useEffect(() => {
     window.onunload = () => {
@@ -31,7 +37,7 @@ export default function Main({firstname, lastname, roomCode, roomType}) {
             <Footer />
         </>
       ) : (
-        <JoinForm firstname={firstname} lastname={lastname} roomCode={roomCode} roomType={roomType} />
+        <JoinForm firstname={settings.firstname} lastname={settings.lastname} roomCode={settings.roomCode} roomType={settings.roomType} />
         )}
     </div>
   );

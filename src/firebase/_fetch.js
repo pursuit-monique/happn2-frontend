@@ -1,14 +1,13 @@
+// const API = window.location.toString().split("/").slice(0, 3).join("/");
 const API = process.env.API;
-
+console.log("current API", API);
 let default_fetch_options = {
   "Access-Control-Allow-Origin": "*",
   "Content-Type": "application/json",
 };
-
 function error_handle(error) {
   console.error(error);
 }
-
 function fetch_get(url, callback) {
   const body = {
     method: "GET",
@@ -17,7 +16,6 @@ function fetch_get(url, callback) {
     },
     credentials: "include",
   };
-
   fetch(url, body)
     .then((response) => response.json())
     .then((res) => {
@@ -28,7 +26,6 @@ function fetch_get(url, callback) {
       callback({ error: "fetch error" });
     });
 }
-
 function fetch_post(url, fetchOptions, callback, method = "POST") {
   fetchOptions.method = method;
   fetchOptions.headers = {
