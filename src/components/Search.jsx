@@ -10,6 +10,11 @@ function Search({ search, setSearch }) {
 
   return (
     <div className="input-group mb-3 w-25 position-relative position-absolute top-0 start-0 Search__padding">
+        {/* <div class="input-group mb-3"> */}
+  <div class="input-group-text">
+    <label for="previous fs-6">Only Current:  </label>
+            <input class="form-check-input mt-0" name='previous' type="checkbox" value="" aria-label="Checkbox for following text input" /> 
+            </div>
       <input
         type="text"
         className="form-control focus-ring focus-ring-warning"
@@ -19,9 +24,9 @@ function Search({ search, setSearch }) {
         value={search} // Input value is controlled by the 'search' prop
         onChange={handleInputChange} // Update state when input changes
       />
-      <button className="btn btn-light" type="button" id="button-addon2">
+      {/* <button className="btn btn-light" type="button" id="button-addon2">
         Search
-      </button>
+      </button> */}
     </div>
   );
 }

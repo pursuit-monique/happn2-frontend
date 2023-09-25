@@ -8,8 +8,10 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
+
 import { storage } from "../firebase/firebase";
 import { v4 } from "uuid";
+
 // import 'firebase/storage'; 
 
 
@@ -65,18 +67,6 @@ export default function NewEvent(){
       }
     }
 
-
-    // const handleUpload = () => {
-    //     if (imageUpload == null) return;
-    //     const imageRef = ref(storage, `images/${imageUpload.current.name + v4()}`);
-    //     uploadBytes(imageRef, imageUpload.current).then((snapshot) => {
-    //       console.log(snapshot)
-    //       // getDownloadURL(snapshot.ref).then((url) => {
-    //       //   // setImageUrls((prev) => [...prev, url]);
-    //       //   console.log(url)
-    //       // });
-    //     });
-    //   };
     function isFormValid(currEvent) {
       return (
         currEvent.name.trim() !== "" &&
@@ -94,26 +84,44 @@ export default function NewEvent(){
       componentRestrictions: { country: "us"},
       fields: ["address_components", "geometry", "name", "place_id", "type"],
     };
-    useEffect(() => {
-      autoCompleteRef.current = new window.google.maps.places.Autocomplete(
-        inputRef.current,
-        options
-      );
-      autoCompleteRef.current.addListener("place_changed", function () {
-        const place = autoCompleteRef.current.getPlace();
-        console.log(place)
-    
-        setEvent((prevData) => ({
-          ...prevData,
-          address: `${place?.address_components[0].long_name} ${place?.address_components[1].long_name}, ${place.address_components[3].long_name === "Brooklyn" || place.address_components[3].long_name === "Bronx" || place.address_components[3].long_name === "Manhattan" ? place?.address_components[3].long_name : place?.address_components[2].long_name}, ${place?.address_components[5]?.short_name}. ${place?.address_components[7]?.short_name}-${place?.address_components[8]?.short_name}`,
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-          'locale_info': place.place_id,
-          'tags': [place.name, ...place.types]
-        }));
-      });
-    }, );
 
+    useEffect(() => {
+      // This function will be called when the Google Maps script is loaded
+      const handleScriptLoad = () => {
+        // Initialize the Google Maps Places Autocomplete
+        autoCompleteRef.current = new window.google.maps.places.Autocomplete(
+          inputRef.current,
+          options
+        );
+        autoCompleteRef.current.addListener("place_changed", function () {
+          const place = autoCompleteRef.current.getPlace();
+          console.log(place)
+      
+          setEvent((prevData) => ({
+            ...prevData,
+            address: `${place?.address_components[0].long_name} ${place?.address_components[1].long_name}, ${place.address_components[3].long_name === "Brooklyn" || place.address_components[3].long_name === "Bronx" || place.address_components[3].long_name === "Manhattan" ? place?.address_components[3].long_name : place?.address_components[2].long_name}, ${place?.address_components[5]?.short_name}. ${place?.address_components[7]?.short_name}-${place?.address_components[8]?.short_name}`,
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+            'locale_info': place.place_id,
+            'tags': [place.name, ...place.types]
+          }));
+        });
+      } ;
+  
+      const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
+  
+      // Dynamically load the Google Maps API script
+      const script = document.createElement('script');
+      script.src = scriptUrl;
+      script.async = true;
+      script.onload = handleScriptLoad;
+      document.body.appendChild(script);
+  
+      // Clean up by removing the script when the component unmounts
+      return () => {
+        document.body.removeChild(script);
+      };
+    }, []);
 
 
     async function handleSubmit(event) {
@@ -159,7 +167,6 @@ export default function NewEvent(){
 
       return (
         <>
-
         <form onSubmit={handleSubmit}>
               <div className="row form_container align-self-center">
         <div class="col p-4 m-4 border-0 shadow-lg bg-light rounded-4" style={{height: "auto"}}>
@@ -311,6 +318,7 @@ export default function NewEvent(){
         </div>
       </div>
       </form>
+
         </>
       )
 }

@@ -3,7 +3,6 @@ import {
     GoogleMapsMarkerClusterer,
     GoogleMarkerClusterer,
     GoogleMap,
-    InfoWindow,
     Marker,
     CircleF,
     useLoadScript,
@@ -20,6 +19,7 @@ import {
 
   import { UserContext } from "../App";
 
+
 const Index = () =>{ 
     const {settings, setSettings} = useContext(UserContext);
 
@@ -35,6 +35,22 @@ const Index = () =>{
 
     const id = useRef({lat: 70, lng: 80})
 
+    const [pictures, setPictures] = useState([]);
+
+    useEffect(() => {
+      // Make an HTTP GET request to the API
+      axios.get('https://randomuser.me/api/?results=30&inc=picture')
+        .then((response) => {
+          // Extract the pictures from the API response
+          const newPictures = response.data.results.map((user) => user.picture.medium);
+          setPictures(newPictures);
+          console.log(newPictures)
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+    }, []);
+
 
     let options = {
         enableHighAccuracy: false,
@@ -49,7 +65,51 @@ const Index = () =>{
     
   });
 
-
+  function formatDateRange(startDateStr, endDateStr) {
+    // Create Date objects from the input strings
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+    const currentDate = new Date();
+  
+    // Define months and days arrays for formatting
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+    // Function to format a date
+  function formatSingleDate(date) {
+      const year = date.getFullYear();
+      const month = months[date.getMonth()];
+      const day = date.getDate();
+      const dayOfWeek = days[date.getDay()];
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const seconds = date.getSeconds();
+  
+      const formattedDate = `${dayOfWeek}, ${month} ${day}, ${year}`;
+      // const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  
+      return `${formattedDate}`;
+    }
+  
+    // Format the start and end dates
+    const formattedStartDate = formatSingleDate(startDate);
+    const formattedEndDate = formatSingleDate(endDate);
+  
+    // Check if the current date is between the start and end dates
+    const isCurrentDateBetween = currentDate >= startDate && currentDate <= endDate;
+  
+    // Create and return the result object
+    const result = {
+      start: formattedStartDate,
+      end: formattedEndDate,
+      is_between: isCurrentDateBetween
+    };
+  
+    return result;
+  }  
 
 
 
@@ -113,27 +173,24 @@ function pinSymbol(color) {
    };
   }
   
-function createElementforEach(title, time, description, photo, lat, lng, id){
+function createElementforEach(title, description, photo, lat, lng, id, start_date, end_date){
     const root = document.createElement("div");
-    root.innerHTML = `<div class="event-container" id=${id} data-bridges="${lat}_${lng}">
-    <div class="event-background"></div>
-    <div class="event-content bottom">
-      <h4>${title}</h4>
-      <em>Today at ${time}</em>
-      <p class="event-description">${description}</p>
-    </div>
-    <div class="avatar__container">
-    <div class="avatar rounded-circle">
-      <img src=${photo || "https://xsgames.co/randomusers/avatar.php?g=female"} id="Avatar${id}" class="rounded-circle" alt="Avatar"  />
-    </div>
-    </div>
-  </div>`
+    // console.log('i', i)
+    console.log('pictures', pictures)
+    console.log(formatDateRange(start_date, end_date).is_between, start_date, end_date)
+    root.innerHTML = `
+ 
+         <div class="avatar__container" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top">
+    <div class="avatar rounded-circle border ${formatDateRange(start_date, end_date).is_between ? "border-info" : "border-danger" }">
+      <img src=${ pictures[id]} id="Avatar${id}" class="rounded-circle" alt="Avatar"  />
+    </div> 
+    </div>`
 
     return root;
 }
 console.log(Marker)
 
-async function asyncAdvancedMarkerGenerator(data){
+async function asyncAdvancedMarkerGenerator(data, i){
     const AdvancedMarker = await google.maps.importLibrary("marker")
         .then(markerLibrary =>{
             classAdvancedMarker.current = markerLibrary;
@@ -144,8 +201,9 @@ async function asyncAdvancedMarkerGenerator(data){
         const marker = new classAdvancedMarker.current.AdvancedMarkerElement({
             map,
             position: { lat: data.lat, lng: data.lng },
-            content: createElementforEach(data.name, data.info, data.picure, data.lat, data.lng, data.id),
+            content: createElementforEach(data.name, data.info, data.picure, data.lat, data.lng, data.id, data.start_date, data.end_date),
           });
+          console.log(data.end_date)
 
           marker.addListener("click", () => {
             map.setZoom(12);
@@ -207,7 +265,9 @@ async function asyncAdvancedMarkerGenerator(data){
                 mapContainerClassName="map"
                 onLoad={onMapLoad}
                 // onClick={() => setIsOpen(false)}
-                options={{mapId: 'c46a80dd73b97856',
+                options={{
+                zoom: 11,
+                mapId: 'c46a80dd73b97856',
                 zoomControl: false,
                 mapTypeControl: false,
                 scaleControl: false,

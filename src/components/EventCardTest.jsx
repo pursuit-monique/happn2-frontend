@@ -13,7 +13,7 @@ import axios from "axios";
 import "./EventCardTest.css";
 import { reauthenticateWithCredential } from "firebase/auth";
 import { useContext } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import DirectionsMap from "./DirectionsMap";
 
@@ -25,17 +25,36 @@ export default function EventCardTest(){
   const [ broadcasts, setBroadcasts] = useState([]);
   const [currEvent, setCurrEvent] = useState([]);
   const [state, setState] = useState([]);
+  const [radius, setRadius] = useState();
 console.log(DirectionsRenderer)
 console.log(DirectionsService)
+const navigate = useNavigate();
+function handleCreateBroadcast(event){
+  event.preventDefault();
+  let params = {"event_id": currEvent.id, "user_id": 1, "title": currEvent.name?.replace(' ', '_'), "about": currEvent.info}
+  console.log(params)
+  axios
+  .post(`http://localhost:3331/broadcasts/make-request`, params)
+  .then((response) => {
+    console.log(response.data);
+
+  navigate(`/video/${response.data.room_codes['organizer-mobile']}`);
+    
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
+
+
 // useEffect
 function onViewBroadcast(broadcast){
     setSettings({...settings, "firstname": "Mitsurugi", "lastname": "Mitsurugi", "roomCode": broadcast.room_codes.moderator, "roomType": "Moderator"})
 
     console.log(settings)
-    // setState(true);
 }
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_BACKEND_URL}/broadcasts`)
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/broadcasts?id=${id}`)
           .then((response) => {
             setBroadcasts(response.data);
           })
@@ -57,7 +76,7 @@ function onViewBroadcast(broadcast){
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       
         // Function to format a date
-        function formatSingleDate(date) {
+      function formatSingleDate(date) {
           const year = date.getFullYear();
           const month = months[date.getMonth()];
           const day = date.getDate();
@@ -67,9 +86,9 @@ function onViewBroadcast(broadcast){
           const seconds = date.getSeconds();
       
           const formattedDate = `${dayOfWeek}, ${month} ${day}, ${year}`;
-          const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+          // const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       
-          return `${formattedDate} ${formattedTime}`;
+          return `${formattedDate}`;
         }
       
         // Format the start and end dates
@@ -87,16 +106,16 @@ function onViewBroadcast(broadcast){
         };
       
         return result;
-      }
+      }  
       
       
     const {start, end, is_between} = formatDateRange(currEvent.start_date, currEvent.end_date);
       useEffect( () => {
-        
+        console.log(radius)
         axios.get(`${process.env.REACT_APP_BACKEND_URL}/events/one`, {
             params: {
-              latitude: 40,
-              longitude: 30,
+              latitude: radius?.lat || 23,
+              longitude: radius?.lng || 23,
               'id':id
             //   settings.radius
             },
@@ -111,7 +130,7 @@ function onViewBroadcast(broadcast){
     
             throw error;
           });
-    }, [settings.radius])
+    }, [settings.radius, radius?.lat, radius?.lng])
 
     return(
     <>
@@ -141,18 +160,19 @@ function onViewBroadcast(broadcast){
             <div className="row bg-gradient w-100 h-50 ShowPage_SideMargin">
                 <div className="col-xl m-0 p-0"><img className="object-fit-cover ShowPage__TopMargin p-0 w-100 bg-gradient ShowPage_Image" src={currEvent.picture}  alt="" style={{width: "48%"}}/>
                 <img className="m-0  p-0 bg-gradient ShowPage_Image ShowPage_GoogleImages" src={`https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${currEvent.lat},${currEvent.lng}
-&fov=80&heading=70&pitch=0&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}  alt="" /> <img className="m-0 p-0 bg-gradient ShowPage_Image ShowPage_GoogleImages" src={`https://maps.googleapis.com/maps/api/staticmap?center=${currEvent.lat},${currEvent.lng}&zoom=12&size=400x400&maptype=roadmap&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}  alt="" />
+&fov=80&heading=70&pitch=0&key=${process.env.REACT_APP_GOOGLE_API_KEY}`}  alt="" /> <img className="m-0 p-0 bg-gradient ShowPage_Image ShowPage_GoogleImages" src={`https://maps.googleapis.com/maps/api/staticmap?center=${currEvent.lat},${currEvent.lng}&zoom=12&size=400x400&maptype=roadmap&key=${process.env.NEXT_PUBLIC_MAP_API_KEY}`}  alt="" />
                 </div>
                 <div className="col-sm p-0 ShowPage__TopMargin">                
-                <div className="card text-center shadow ShowPage__Information">
+                <div className="card text-center shadow ShowPage__Information h-auto">
                     <div className="card-body">
-                        <h5 className="card-title">Where to go?</h5>
+                        <h5 className="card-title"><strong>Where to go?</strong></h5>
                         {/* <h6 className="card-subtitle mb-2 text-body-secondary">Time</h6> */}
                         <p className="card-text"> 
                              <ul className="list-group list-group-flush">
-                                <li className="list-group-item">{currEvent.address}</li>
-                                <li className="list-group-item">{start}, {end}</li>
-                                <li className="list-group-item">{currEvent.distance_miles} mi away</li>
+                                <li className="list-group-item">{currEvent.address?.replace('-undefined', '')}</li>
+                                <li className="list-group-item">{start}
+                                 {end}</li>
+                                <li className="list-group-item">{currEvent.distance_miles?.toFixed(4)} mi away</li>
                             </ul>
                         </p>
                     </div>
@@ -160,7 +180,7 @@ function onViewBroadcast(broadcast){
 
                     <div className="card text-center shadow ShowPage__Information h-auto">
                     <div className="card-body">
-                        <h5 className="card-title">About this Event</h5>
+                        <h5 className="card-title"><strong>About this Event</strong></h5>
                         <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel facilisis nulla. In hac habitasse platea dictumst. Suspendisse id metus vitae metus mattis efficitur at vitae est. Etiam tellus odio, venenatis ac mauris et, mattis finibus leo. Vestibulum at felis suscipit magna egestas auctor eu posuere purus. Duis pellentesque tristique urna quis vestibulum. Pellentesque porta mi vitae felis congue consectetur.
 
 Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit dui sagittis purus aliquam, quis iaculis ligula pellentesque. Quisque ornare sem vel nisi elementum sagittis. Phasellus sit amet pellentesque risus, porttitor varius dolor. Etiam elementum orci et laoreet gravida. In suscipit dui mauris. Quisque sit amet augue sit amet ante dapibus molestie in at ipsum. Aenean cursus urna a elementum viverra.</p>
@@ -168,13 +188,22 @@ Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit du
                     </div>
                     <div className="card text-center shadow ShowPage__Information h-auto">
                     <div className="card-body">
-                        <h5 className="card-title">{is_between? "This event is ongoing!" : "This isn't currently happn"}</h5>
+                        <h5 className="card-title"><strong>{is_between? "This event is ongoing!" : "This isn't currently happn"}</strong></h5>
                         <h6 className="card-subtitle mb-2 text-body-secondary">{currEvent.distance_miles > 0.5 ? "...But you're too far away" : "...and you're ready to get started!"}</h6>
                         <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <form onSubmit={handleCreateBroadcast}>
                         <div className="btn-group shadow" role="group" aria-label="Basic mixed styles example">
-  <button type="button" className="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                        {currEvent.distance_miles < 0.5 ? (
+  <button type="submit" className="btn btn-danger" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-alt-fill" viewBox="0 0 16 16">
   <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
 </svg> Check-In</button>
+) : (
+  <button type="button" className="btn btn-danger" disabled><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+</svg> View Broadcasts.</button>
+
+)}
+
   <button type="button" className="btn btn-warning"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-fill" viewBox="0 0 16 16">
   <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
 </svg> Review</button>
@@ -184,6 +213,7 @@ Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit du
   <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
 </svg> View History</button>
 </div>
+</form>
                     </div>
                     </div>
                 </div>
@@ -194,10 +224,11 @@ Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit du
 
 </div>
 
-<Wrapper apiKey={process.env.REACT_APP_GOOGLE_API_KEY}><div className="bg-light h-50 w-100"><DirectionsMap lat={currEvent.lat} lng={currEvent.lng} /></div>  </Wrapper>
+<Wrapper apiKey={process.env.REACT_APP_GOOGLE_API_KEY}><div className="bg-light h-50 w-100"><DirectionsMap lat={currEvent.lat} lng={currEvent.lng} setRadius={setRadius} /></div>  </Wrapper>
 
     </div>
-
+<div className="row">
+  <div className="col-2">
    { broadcasts && broadcasts.map(broadcast =>{ 
     const dateString = broadcast.created_at;
     const date = new Date(dateString);
@@ -213,7 +244,7 @@ Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit du
     const formattedTime = `${hours}:${minutes}:${seconds}`;
     
     return (
-<div> 
+<div className="col-3"> 
 <div className="card shadow-lg p-0 m-0 h-auto">
 <div className="container p-0 m-0 card-body">
   <div className="row px-3 my-1 mt-3"><h5 className="card-title fw-bold">{broadcast.title}</h5></div>
@@ -232,7 +263,7 @@ Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit du
   
 </div>
 </div>
-</div>)})}
+</div>)})}</div></div>
 {/* <div className="card mb-3 p-0 h-auto" style={{maxWidth: "540px"}}>
   <div className="row g-0">
     <div className="col-md-7">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function DirectionsMap({lat, lng}) {
+function DirectionsMap({lat, lng, setRadius}) {
   const directionsService = useRef(new window.google.maps.DirectionsService());
   const directionsRenderer = useRef(new window.google.maps.DirectionsRenderer());
 
@@ -27,6 +27,10 @@ function DirectionsMap({lat, lng}) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setStart({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setRadius({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });

@@ -3,7 +3,8 @@ import JoinForm from "./JoinForm";
 import Header from "./Header";
 import Conference from "./Conference";
 import Footer from './Footer';
-import { useEffect } from "react";
+import { useEffect} from "react";
+import { useParams } from "react-router-dom";
 import {
   selectIsConnectedToRoom,
   useHMSActions,
@@ -14,6 +15,7 @@ import { useContext } from "react";
 import { UserContext } from "../../App";
 
 export default function Main({firstname, lastname, roomCode, roomType}) {
+  const {roomID} = useParams();
   const isConnected = useHMSStore(selectIsConnectedToRoom);
   const hmsActions = useHMSActions();
   const {settings} = useContext(UserContext);
@@ -37,7 +39,7 @@ export default function Main({firstname, lastname, roomCode, roomType}) {
             <Footer />
         </>
       ) : (
-        <JoinForm firstname={settings.firstname} lastname={settings.lastname} roomCode={settings.roomCode} roomType={settings.roomType} />
+        <JoinForm firstname={settings.firstname} lastname={settings.lastname} roomCode={roomID || settings.roomCode} roomType={settings.roomType} />
         )}
     </div>
   );

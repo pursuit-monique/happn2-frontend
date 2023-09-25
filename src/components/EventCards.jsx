@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import {Link} from "react-router-dom";
 
 import "./EventCards.css";
 import { tempData } from "../helpers/Objects";
@@ -8,16 +9,16 @@ const EventCards= ({currID}) => {
 
    const [currentEvent, setEvent] = useState(currID ? tempData.filter( data => data.id === currID.id) : null);
    useEffect(() => {
-    if (currID) setEvent(tempData.filter( data => data.id === currID.id));
+    // if (currID) setEvent(tempData.filter( data => data.id === currID.id));
     console.log(currentEvent);
     console.log(tempData);
     console.log(currID)
         }, [currID])
     return (
         <>
-        {currID ? 
-        <div className="EventCards">
-        <div className="card mb-3 p-0 h-auto" style={{maxWidth: "540px"}}>
+        {currID ?
+        <Link to={`../test/${currID.id.id}`}>
+        <div className="card p-0 shadow h-auto position-absolute z-3 padding" style={{maxWidth: "540px"}}>
   <div className="row g-0">
     <div className="col-md-7">
       <div className="card-body">
@@ -33,9 +34,9 @@ const EventCards= ({currID}) => {
     </div>
   </div>
 </div>
-</div>
+</Link> 
 
-        : null}
+: null}
         </>
     )
 }
