@@ -107,12 +107,12 @@
 
   .avatar {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 1vw;
+    height: 1vh;
     border-radius: 50%;
     border: 1px solid white;
-    bottom: -70px; 
-    left: calc(50% - 20px);
+    /* bottom: -70px;  */
+    /* left: calc(50% - 20px); */
     z-index: initial;
     pointer-events: initial;
   }
