@@ -19,6 +19,7 @@
 
 .NewsPanel__header{
     /* float: left; */
+    width: 25%;
     position:absolute;
     bottom: 50px;
     left: -8px;
@@ -35,4 +36,17 @@
     font-weight: bolder;
     text-shadow: 4px 3px  #314983;
     margin-left: 64px;
+}
+
+@media (max-width: 580px){
+    .NewsPanel__header{
+        width:  60vw;
+        bottom: 60px;
+        left: -8px;
+     
+    }
+    .NewsPanel__headline{
+        width:  40vw;
+    }
+
 }

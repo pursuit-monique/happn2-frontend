@@ -1,4 +1,13 @@
 .Search__padding{
     margin-left: 128px;
     margin-top: 16px;
+    width:25%;
+}
+
+@media (max-width: 780px){
+    .Search__padding{
+        margin-left: 12%;
+        margin-top: 72px;
+        width: 75vw;
+    }
 }

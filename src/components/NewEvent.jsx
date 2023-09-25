@@ -168,33 +168,33 @@ export default function NewEvent(){
       return (
         <>
         <form onSubmit={handleSubmit}>
-              <div className="row form_container align-self-center">
-        <div class="col p-4 m-4 border-0 shadow-lg bg-light rounded-4" style={{height: "auto"}}>
+              <div className="row form_container align-self-center form_margin">
+        <div className="col-sm border-0 shadow-lg bg-light rounded-4 form_padding" style={{height: "auto"}}>
           <div>
-            <h3 class="card-title">
+            <h3 className="card-title ps-2">
               {" "}
               <strong>Submit a New Event </strong>
             </h3>
-            <hr class="border border-info border opacity-75" />
-            <p class="card-text">
-              <div class="mb-3">
-                <label for="title" class="form-label">
+            <hr className="border border-info border opacity-75" />
+            <p className="card-text ps-2">
+              <div className="mb-3">
+                <label for="title" className="form-label">
                   <strong>Title</strong>
                 </label>
                 <input
                   type="text"
-                  class="form-control focus-ring focus-ring-info py-1 px-2 text-decoration-none border rounded-2"
+                  className="form-control focus-ring focus-ring-info py-1 px-2 text-decoration-none border rounded-2"
                   id="name"
                   placeholder="Event title"
                   onChange={handleChange}
                 />
               </div>
-              <div class="mb-3">
-                <label for="img" class="form-label">
+              <div className="mb-3">
+                <label for="img" className="form-label">
                   <strong>Upload Event Image</strong>
                 </label>
                 <input
-                  class="form-control focus-ring focus-ring-info py-1 px-2 text-decoration-none border rounded-2"
+                  className="form-control focus-ring focus-ring-info py-1 px-2 text-decoration-none border rounded-2"
                   type="file"
                   id="picture"
                   onChange={handleFileChange}
@@ -203,7 +203,7 @@ export default function NewEvent(){
 
               <div className="row g-auto my-3 justify-content-between">
                 <div className="col-7">
-                  <label for="summary" class="form-label">
+                  <label for="summary" className="form-label">
                     <strong>Summary</strong>
                   </label>
                   <input
@@ -298,10 +298,10 @@ export default function NewEvent(){
             </div>
           </div>
         </div>
-        <div className="col">
+        <div className="col-auto">
           {/* <div className="row-1 card-title bg-primary"></div> */}
           {response?.judgement ? 
-          <div class="card text-center m-4">
+          <div class="card text-center h-auto form_margin form_padding">
           <div class="card-header bg-primary text-light">
             Event did not submit
           </div>

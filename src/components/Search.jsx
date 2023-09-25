@@ -9,7 +9,7 @@ function Search({ search, setSearch }) {
   };
 
   return (
-    <div className="input-group mb-3 w-25 position-relative position-absolute top-0 start-0 Search__padding">
+    <div className="input-group mb-3 position-relative position-absolute top-0 start-0 Search__padding">
         {/* <div class="input-group mb-3"> */}
   <div class="input-group-text">
     <label for="previous fs-6">Only Current:  </label>

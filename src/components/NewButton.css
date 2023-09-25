@@ -16,6 +16,7 @@
 
 @media (max-width: 580px){
     .NewButton{
-        bottom: 0px;
+        bottom: 0;
+        top:80%;
     }
 }
