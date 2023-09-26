@@ -116,3 +116,11 @@
     font-size: 15px;
     font-weight: lighter;
   }
+
+  @media (max-width:580px){
+    .padding{
+      /* height: 25%; */
+      /* top: 0; */
+      bottom: -20px;
+    }
+  }
