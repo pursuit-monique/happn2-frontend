@@ -31,7 +31,7 @@ console.log(DirectionsService)
 const navigate = useNavigate();
 function handleCreateBroadcast(event){
   event.preventDefault();
-  let params = {"event_id": currEvent.id, "user_id": 1, "title": currEvent.name?.replace(' ', '_'), "about": currEvent.info}
+  let params = {"event_id": currEvent.id, "user_id": 1, "title": currEvent.name?.replace(' ', '_').trim(), "about": currEvent.info}
   console.log(params)
   axios
   .post(`${process.env.REACT_APP_BACKEND_URL}/broadcasts/make-request`, params)
