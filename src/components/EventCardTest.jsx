@@ -34,7 +34,7 @@ function handleCreateBroadcast(event){
   let params = {"event_id": currEvent.id, "user_id": 1, "title": currEvent.name?.replace(' ', '_'), "about": currEvent.info}
   console.log(params)
   axios
-  .post(`http://localhost:3331/broadcasts/make-request`, params)
+  .post(`${process.env.REACT_APP_BACKEND_URL}/broadcasts/make-request`, params)
   .then((response) => {
     console.log(response.data);
 
