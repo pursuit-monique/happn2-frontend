@@ -1,0 +1,41 @@
+.SideMenu {
+    width: 35vw;
+    height: 100vh;
+    z-index: 400;
+    margin-left: 17vw;
+}
+
+.SideCard{
+    backdrop-filter: brightness(10%);
+    filter: brightness(70%) blur(10px);
+    transition: filter 0.3s ease;
+    margin-left: 24px;
+}
+
+.SideText{
+    filter: brightness(100%)
+}
+
+  .SideContainer {
+    width: 35vw;
+    overflow: hidden; 
+    transition: filter 1.3s ease;
+    margin-bottom: 16px;
+    margin-left: 16px;
+  }
+
+  .SideContainer .SideCard{
+    transition: filter 1.3s ease;
+  }
+  
+  .SideContainer:hover .SideCard {
+    filter: blur(0px) brightness(70%);
+    transition: filter 1.3s ease;
+  }
+  
+  
+@media (max-width: 780px){
+    .SideMenu{
+        display: none;
+    }
+}

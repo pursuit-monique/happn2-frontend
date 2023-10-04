@@ -16,6 +16,7 @@ import {
   import EventCards from './EventCards';
   import Radius from './Radius';
   import Search from "./Search";
+  import SideMenu from "./SideMenu";
 
   import { UserContext } from "../App";
 
@@ -24,24 +25,22 @@ const Index = () =>{
     const {settings, setSettings} = useContext(UserContext);
 
     const [mapRef, setMapRef] = useState();
-    // const [isOpen, setIsOpen] = useState(false);
-    // const [infoWindowData, setInfoWindowData] = useState();
-    const [ currID, setID ] = useState();
-    const markers = useRef([]);
     const [search, setSearch] = useState([]);
-    const results = useRef([]);
-    const [currPos, setCurrPos] = useState({lat: 70, lng: 80});
-    const classAdvancedMarker = useRef();
+    const [ currID, setID ] = useState();
+    const [currPos, setCurrPos] = useState({lat: 40, lng: -73});
 
-    const id = useRef({lat: 70, lng: 80})
+    const markers = useRef([]);
+    const results = useRef([]);
+    const classAdvancedMarker = useRef();
+    const [currMarker, setCurrMarker] = useState();
+
+    const id = useRef({lat: 40, lng: -70})
 
     const [pictures, setPictures] = useState([]);
 
     useEffect(() => {
-      // Make an HTTP GET request to the API
       axios.get('https://randomuser.me/api/?results=30&inc=picture')
         .then((response) => {
-          // Extract the pictures from the API response
           const newPictures = response.data.results.map((user) => user.picture.medium);
           setPictures(newPictures);
           console.log(newPictures)
@@ -124,8 +123,8 @@ const Index = () =>{
 
   useEffect( () => {
     let map = mapRef; 
-    map?.setCenter({ lat: currPos.lat, lng: currPos.lng});
-    map?.panTo({ lat: currPos.lat, lng: currPos.lng});
+    // map?.setCenter({ lat: currPos.lat, lng: currPos.lng});
+    // map?.panTo({ lat: currPos.lat, lng: currPos.lng});
     
     axios.get(`${process.env.REACT_APP_BACKEND_URL}/events`, {
         params: {
@@ -160,7 +159,7 @@ console.log(markers.current)
 // const cluster = new GoogleMapsMarkerClusterer.Cluster(map, markersList)
 // const markersList = markers.current;
     // new MarkerClusterer({  map, markersList });
-}, [ currPos, settings.radius, search])
+}, [ currPos, settings.radius, search, currMarker])
 
 function pinSymbol(color) {
     return {
@@ -178,13 +177,19 @@ function createElementforEach(title, description, photo, lat, lng, id, start_dat
     // console.log('i', i)
     console.log('pictures', pictures)
     console.log(formatDateRange(start_date, end_date).is_between, start_date, end_date)
-    root.innerHTML = `
+    root.innerHTML = currMarker === id ? `
  
          <div class="avatar__container" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top">
-    <div class="avatar rounded-circle border ${formatDateRange(start_date, end_date).is_between ? "border-info" : "border-danger" }">
+    <div class="avatar bouncing-image rounded-circle border ${formatDateRange(start_date, end_date).is_between ? "border-info" : "border-danger" }">
       <img src=${ pictures[id]} id="Avatar${id}" class="rounded-circle" alt="Avatar"  />
     </div> 
-    </div>`
+    </div>` : `
+ 
+    <div class="avatar__container" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top">
+<div class="avatar rounded-circle border ${formatDateRange(start_date, end_date).is_between ? "border-info" : "border-danger" }">
+ <img src=${ pictures[id]} id="Avatar${id}" class="rounded-circle" alt="Avatar"  />
+</div> 
+</div>`
 
     return root;
 }
@@ -211,6 +216,7 @@ async function asyncAdvancedMarkerGenerator(data, i){
             setID({position: {lat: data.lat, lng: data.lng }, id: data});
             console.log(data)
           })
+          marker.setID = data.id;
         markers.current.push(marker);
         //   console.log(marker)
         //   markers.current.push(marker);
@@ -294,7 +300,8 @@ async function asyncAdvancedMarkerGenerator(data, i){
   zIndex: 1,
 }} />
         </GoogleMap>
-        <NewsPanel map={mapRef} />
+        {/* <NewsPanel map={mapRef} /> */}
+        <SideMenu events={results.current} map={mapRef} setCurrMarker={setCurrMarker} />
         <Search search={search} setSearch={setSearch} />
     {/* <CauseList /> */}
     
