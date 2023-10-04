@@ -86,9 +86,7 @@ export default function NewEvent(){
     };
 
     useEffect(() => {
-      // This function will be called when the Google Maps script is loaded
       const handleScriptLoad = () => {
-        // Initialize the Google Maps Places Autocomplete
         autoCompleteRef.current = new window.google.maps.places.Autocomplete(
           inputRef.current,
           options
@@ -110,14 +108,11 @@ export default function NewEvent(){
   
       const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
   
-      // Dynamically load the Google Maps API script
       const script = document.createElement('script');
       script.src = scriptUrl;
       script.async = true;
       script.onload = handleScriptLoad;
       document.body.appendChild(script);
-  
-      // Clean up by removing the script when the component unmounts
       return () => {
         document.body.removeChild(script);
       };
@@ -278,6 +273,8 @@ export default function NewEvent(){
                 id="address"
                 placeholder="e.g 123 Springfield Rd."
                 ref={inputRef}
+                style={{zIndex: "800"}}
+                
                 
               />
             </p>
