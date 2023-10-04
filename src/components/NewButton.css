@@ -1,7 +1,7 @@
 .NewButton{
     z-index: 210;
     position:absolute;
-    top: 564px;
+    top: 90vh;
     right: 4px;
     filter: drop-shadow(4px 3px #7ddcd9);
     &:active{
