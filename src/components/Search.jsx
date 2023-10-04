@@ -11,7 +11,7 @@ function Search({ search, setSearch }) {
   return (
     <div className="input-group mb-3 position-relative position-absolute top-0 start-0 Search__padding">
         {/* <div class="input-group mb-3"> */}
-  <div class="input-group-text">
+  <div class="input-group-text bg-dark text-light">
     <label for="previous fs-6">Only Current:  </label>
             <input class="form-check-input mt-0" name='previous' type="checkbox" value="" aria-label="Checkbox for following text input" /> 
             </div>

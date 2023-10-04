@@ -13,7 +13,7 @@ h1, h2, h3, h4, h5{
 
 .map {
   position: relative;
-  width: 90vw;
+  width: 100vw;
   height: 100vh;
   margin-left: auto;
   margin-right: auto;
@@ -37,6 +37,54 @@ h1, h2, h3, h4, h5{
 .form_padding{
   padding: 32px;
 }
+.bouncing-image {
+  box-shadow:
+    0 0 1px 1px #faff78,  /* inner white */
+    0 0 3px 3px rgb(255, 157, 0), /* middle magenta */
+    0 0 5px 5px rgb(244, 8, 8); /* outer cyan */
+  position: relative;
+  animation: bounce-squish 1.0s infinite  ease-out;
+  transform-origin: bottom center;
+}
+
+.bouncing-image-bad {
+  box-shadow:
+    0 0 1px 1px #faff78,  /* inner white */
+    0 0 3px 3px rgb(255, 157, 0), /* middle magenta */
+    0 0 5px 5px rgb(244, 8, 8); /* outer cyan */
+  position: relative;
+  animation: bounce-squish 1.0s infinite  ease-out;
+  transform-origin: bottom center;
+}
+
+.bouncing-image-good {
+  box-shadow:
+    0 0 1px 1px #faff78,  /* inner white */
+    0 0 3px 3px rgb(194, 255, 63), /* middle magenta */
+    0 0 5px 5px rgb(16, 237, 193); /* outer cyan */
+  position: relative;
+  animation: bounce-squish 1.0s infinite  ease-out;
+  transform-origin: bottom center;
+}
+
+@keyframes bounce-squish {
+  0%{
+    transform: translateY(-20px) scaleY(1);
+  }
+  40% {
+    transform: translateY(-5px) scaleY(.9);
+  }
+  60%{
+    transform: translateY(0) scaleY(0.3);
+  }
+  80%{
+    transform: translateY(-5px) scaleY(.9);
+  }
+  100%{
+    transform: translateY(-20px) scaleY(1);
+  }
+}
+
 
 @media (max-width: 500px ){
   .form_container{

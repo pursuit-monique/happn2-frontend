@@ -3,15 +3,14 @@ import { Link } from "react-router-dom";
 
 import {
   DirectionsRenderer,
-  DirectionsService,
-  GoogleMap,
+  DirectionsService
 } from '@react-google-maps/api'
 import { Wrapper } from "@googlemaps/react-wrapper";
 
 
 import axios from "axios";
 import "./EventCardTest.css";
-import { reauthenticateWithCredential } from "firebase/auth";
+// import { reauthenticateWithCredential } from "firebase/auth";
 import { useContext } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -24,7 +23,6 @@ export default function EventCardTest(){
   const {settings, setSettings} = useContext(UserContext);
   const [ broadcasts, setBroadcasts] = useState([]);
   const [currEvent, setCurrEvent] = useState([]);
-  const [state, setState] = useState([]);
   const [radius, setRadius] = useState();
 console.log(DirectionsRenderer)
 console.log(DirectionsService)
@@ -264,40 +262,7 @@ Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit du
 </div>
 </div>
 </div>)})}</div></div>
-{/* <div className="card mb-3 p-0 h-auto" style={{maxWidth: "540px"}}>
-  <div className="row g-0">
-    <div className="col-md-7">
-      <div className="card-body">
-        <h5 className="card-title">Card title</h5>
-        <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        <p className="card-text"><small className="text-body-secondary">Last updated 3 mins ago</small></p>
-      </div>
-    </div>
-    <div className="col-md-5 p-0 m-0">
-      <img src="https://xsgames.co/randomusers/avatar.php?g=female" className="img-fluid object-fit-cover rounded-end h-100 p-0 m-0" alt="..." />
-    </div>
-  </div>
-</div> */}
 
     </>
     )
 }
-
-{/* <div className="card p-0">
-<div className="title">Title</div>
-<div className="image-left">
-    <img src="locale.jpg" alt='place' />
-</div>
-<div className="body">
-    <p>This is the body section.</p>
-    <p>It can have multiple lines of text.</p>
-</div>
-<div className="image-right">
-    <img src="map.jpg"  alt="map" />
-</div>
-<div className="footer">Footer</div>
-</div>
-
-<div>
-
-</div> */}

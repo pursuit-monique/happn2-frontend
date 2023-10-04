@@ -1,7 +1,14 @@
-.Search__padding{
+/* .Search__padding{
     margin-left: 128px;
     margin-top: 16px;
     width:25%;
+} */
+
+.Search__padding{
+    margin-left: 5vw;
+    margin-top: 16px;
+    width:25%;
+    z-index: 500;
 }
 
 @media (max-width: 780px){
