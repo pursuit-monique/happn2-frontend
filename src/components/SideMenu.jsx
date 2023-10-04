@@ -1,4 +1,6 @@
 import "./SideMenu.css"
+import {Link} from "react-router-dom";
+
 export default function SideMenu({events, map, setCurrMarker}) {
 
 
@@ -18,7 +20,9 @@ const handleMouseEnter = (lat, lng, id) => {
     let lat = Number(event?.lat);
     let lng = Number(event?.lng);
     console.log('lat: ', lat)
-    return(<div className="SideContainer" onMouseEnter={() => handleMouseEnter(lat, lng, event.id)}>
+    return(
+        <Link to={`../event/${event.id}`}>
+    <div className="SideContainer" onMouseEnter={() => handleMouseEnter(lat, lng, event.id)}>
 <div class="card p-0 m-0 text-bg-dark SideCard position-absolute shadow-sm" style={{backgroundImage: `url(${event.picture})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center'}}>
@@ -31,7 +35,8 @@ const handleMouseEnter = (lat, lng, id) => {
     <p class="card-text"><small>{event.distance_miles.toFixed(2)}mi away</small></p>
   </div>
 </div>
-</div>)} )}
+</div>
+</Link>)} )}
 
         </div>
         </>

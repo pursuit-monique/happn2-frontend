@@ -38,6 +38,30 @@ h1, h2, h3, h4, h5{
   padding: 32px;
 }
 .bouncing-image {
+  box-shadow:
+    0 0 1px 1px #faff78,  /* inner white */
+    0 0 3px 3px rgb(255, 157, 0), /* middle magenta */
+    0 0 5px 5px rgb(244, 8, 8); /* outer cyan */
+  position: relative;
+  animation: bounce-squish 1.0s infinite  ease-out;
+  transform-origin: bottom center;
+}
+
+.bouncing-image-bad {
+  box-shadow:
+    0 0 1px 1px #faff78,  /* inner white */
+    0 0 3px 3px rgb(255, 157, 0), /* middle magenta */
+    0 0 5px 5px rgb(244, 8, 8); /* outer cyan */
+  position: relative;
+  animation: bounce-squish 1.0s infinite  ease-out;
+  transform-origin: bottom center;
+}
+
+.bouncing-image-good {
+  box-shadow:
+    0 0 1px 1px #faff78,  /* inner white */
+    0 0 3px 3px rgb(194, 255, 63), /* middle magenta */
+    0 0 5px 5px rgb(16, 237, 193); /* outer cyan */
   position: relative;
   animation: bounce-squish 1.0s infinite  ease-out;
   transform-origin: bottom center;

@@ -42,7 +42,7 @@ function App() {
             <Route path="/logintest" element={<LogInTest />} />
             {/* <Route path="/signup" element={<Signup />} /> */}
             <Route path="/card" element={<Card />} />
-            <Route path="/test/:id" element={<EventCardTest />} />
+            <Route path="/event/:id" element={<EventCardTest />} />
             <Route path="/directions" element={<DirectionsMap />} />
             <Route path="/video" element={<Main />} />
             <Route path="/new" element={<New />} />

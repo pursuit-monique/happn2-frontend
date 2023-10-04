@@ -180,7 +180,7 @@ function createElementforEach(title, description, photo, lat, lng, id, start_dat
     root.innerHTML = currMarker === id ? `
  
          <div class="avatar__container" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top">
-    <div class="avatar bouncing-image rounded-circle border ${formatDateRange(start_date, end_date).is_between ? "border-info" : "border-danger" }">
+    <div class="avatar rounded-circle border ${formatDateRange(start_date, end_date).is_between ? "border-info bouncing-image-good" : "border-danger bouncing-image-bad" }">
       <img src=${ pictures[id]} id="Avatar${id}" class="rounded-circle" alt="Avatar"  />
     </div> 
     </div>` : `
