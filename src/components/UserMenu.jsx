@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,  useLocation  } from "react-router-dom";
 import "./UserMenu.css";
 
 const UserMenu = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const location = useLocation();
+  console.log('location', location.pathname)
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -40,18 +42,23 @@ const UserMenu = () => {
           aria-labelledby="ImageDropdownToggle"
           style={{
             position: "absolute",
-            top: '60px',
-            right: 0,
+            top: '64px',
+            left: '86vw',
             width: '200px'
           }}
         >
           <li>
-            <Link to="/new" className="dropdown-item active">
+            <Link to="/" className={`dropdown-item ${location.pathname === '/' ? 'active': ''}`}>
+              Main Page
+            </Link>
+          </li>
+          <li>
+            <Link to="/new" className={`dropdown-item ${location.pathname === '/new' ? 'active': ''}`}>
               New Event
             </Link>
           </li>
           <li>
-            <Link to="/user" className="dropdown-item">
+            <Link to="/user" className={`dropdown-item ${location.pathname === '/user' ? 'active': ''}`}>
               User Info
             </Link>
           </li>
@@ -64,9 +71,9 @@ const UserMenu = () => {
             <hr className="dropdown-divider" />
           </li>
           <li>
-            <a className="dropdown-item" href="#">
+            <Link to="/about" className={`dropdown-item ${location.pathname === '/about' ? 'active': ''}`}>
               About
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
