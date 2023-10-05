@@ -28,9 +28,11 @@ const Index = () =>{
     const [ currID, setID ] = useState();
     const [currPos, setCurrPos] = useState({lat: 40, lng: -73});
     const [currMarker, setCurrMarker] = useState();
+    const [list, setList] = useState([]);
+    const [results, setResults] = useState([]);
 
     const markers = useRef([]);
-    const results = useRef([]);
+    // const results = useRef([]);
     const classAdvancedMarker = useRef();
     const classMarkerClusterer = useRef();
  
@@ -124,9 +126,6 @@ const Index = () =>{
 
   useEffect( () => {
     let map = mapRef; 
-    // map?.setCenter({ lat: currPos.lat, lng: currPos.lng});
-    // map?.panTo({ lat: currPos.lat, lng: currPos.lng});
-    
     axios.get(`${process.env.REACT_APP_BACKEND_URL}/events`, {
         params: {
           latitude: currPos.lat,
@@ -137,18 +136,16 @@ const Index = () =>{
       })
       .then(response => {
         const markerList = markers.current;
-     
-        // console.log(response.data)
-        // asyncAdvancedMarkerGenerator((response.data));
         setSettings({...settings, coords: currPos})
-        results.current = response.data;
+        setResults(response.data);
+        setList(results);
         markers.current?.forEach((Marker => Marker.setMap(null)));
         // console.log('search.current', search)
-        search.length > 0 ?   results.current.filter(event => {
+        search.length > 0 ?   results.filter(event => {
             const tags = event.tags ? event.tags.toLowerCase().replace(/[{}]/g, '').split(',') : [];
             let result = (tags.includes(search)) || event.name.toLowerCase().split(' ').includes(search);
             return result;
-        }).forEach((event) => asyncAdvancedMarkerGenerator(event)) : results.current.forEach((event) => asyncAdvancedMarkerGenerator(event))
+        }).forEach((event) => asyncAdvancedMarkerGenerator(event)) : results.forEach((event) => asyncAdvancedMarkerGenerator(event))
 
     
     })
@@ -273,47 +270,8 @@ async function asyncAdvancedMarkerGenerator(data, i){
         <div className="placeholder-wave w-100 h-100">
   <span className="placeholder col-12"></span>
 </div>
-        {/* <Radius /> */}
-        {/* <EventCards currID={currID} /> */}
-        {/* <GoogleMap
-            mapContainerClassName="map"
-            onLoad={onMapLoad}
-            // onClick={() => setIsOpen(false)}
-            options={{
-            zoom: 11,
-            mapId: 'c46a80dd73b97856',
-            zoomControl: false,
-            mapTypeControl: false,
-            scaleControl: false,
-            streetViewControl: false,
-            rotateControl: false,
-            fullscreenControl: false}}
-        >
-      <Marker key={999} position={{lat: currPos.lat, lng: currPos.lng}} icon={pinSymbol("#7ddcd9")      
-      } />
-    <CircleF options={{
-strokeColor: "#ec8527",
-strokeOpacity: 0.6,
-strokeWeight: 2,
-fillColor: "#F7DFBC",
-fillOpacity: 0.25,
-center: {
-lat: currPos.lat, lng: currPos.lng
-},
-radius: settings.radius,
-clickable: false,
-draggable: false,
-editable: false,
-visible: true,
-zIndex: 1,
-}} />
-    </GoogleMap> */}
-    {/* <NewsPanel map={mapRef} /> */}
-    <SideMenu events={results.current} map={mapRef} setCurrMarker={setCurrMarker} currID={currID} />
+    <SideMenu events={list} map={mapRef} setCurrMarker={setCurrMarker} currID={currID} />
     <Search search={search} setSearch={setSearch} />
-{/* <CauseList /> */}
-{/* 
-<NewButton /> */}
     </>
       ) : (
         <>
@@ -352,10 +310,8 @@ zIndex: 1,
   zIndex: 1,
 }} />
         </GoogleMap>
-        {/* <NewsPanel map={mapRef} /> */}
-        <SideMenu events={results.current} map={mapRef} setCurrMarker={setCurrMarker} currID={currID} />
+        <SideMenu events={results} search={search} map={mapRef} setCurrMarker={setCurrMarker} currID={currID} />
         <Search search={search} setSearch={setSearch} />
-    {/* <CauseList /> */}
     
     <NewButton />
         </>
