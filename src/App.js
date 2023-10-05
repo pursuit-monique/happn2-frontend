@@ -17,6 +17,7 @@ import DirectionsMap from "./components/DirectionsMap";
 // import LogIn from "./components/Login";
 import NavBar from "./components/NavBar";
 import Main from "./components/video/Main";
+import About from "./components/About";
 
 import Index from "./components/Index";
 import { AuthProvider } from "./context/AuthContext";
@@ -49,6 +50,7 @@ function App() {
             <Route path="/video" element={<Main />} />
             <Route path="/new" element={<New />} />
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
             <Route
               path="/video/:roomID"
               element={
