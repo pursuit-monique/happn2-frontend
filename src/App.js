@@ -15,6 +15,7 @@ import LogInTest from "./components/LogInTest";
 import EventCardTest from "./components/EventCardTest";
 import DirectionsMap from "./components/DirectionsMap";
 // import LogIn from "./components/Login";
+import NavBar from "./components/NavBar";
 import Main from "./components/video/Main";
 
 import Index from "./components/Index";
@@ -36,6 +37,7 @@ function App() {
     <AuthProvider>
       <Router>
         <UserContext.Provider value={{ settings, setSettings }}>
+          <NavBar />
           <Routes>
             {/* <Route path="/" element={<Map />} /> */}
             {/* <Route path="/login" element={<Login />} /> */}

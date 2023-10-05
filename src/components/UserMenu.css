@@ -4,8 +4,7 @@
     height: 64px;
     border-radius: 50px;
     border: 1px solid #F6F9F9;
-    top: 0.4rem; 
-    right: 0.4rem;
+    left: 94vw;
     z-index: 5;
     box-shadow: 4px 3px #314983;
     transition: filter 0.3s;
