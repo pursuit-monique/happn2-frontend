@@ -5,7 +5,7 @@ import "./UserMenu.css";
 const UserMenu = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
-  console.log('location', location.pathname)
+
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
