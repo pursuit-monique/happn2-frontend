@@ -24,7 +24,7 @@ const Index = () =>{
     const {settings, setSettings} = useContext(UserContext);
 
     const [mapRef, setMapRef] = useState();
-    const [search, setSearch] = useState([]);
+    const [search, setSearch] = useState();
     const [ currID, setID ] = useState();
     const [currPos, setCurrPos] = useState({lat: 40, lng: -73});
     const [currMarker, setCurrMarker] = useState();
@@ -144,7 +144,7 @@ const Index = () =>{
         results.current = response.data;
         markers.current?.forEach((Marker => Marker.setMap(null)));
         // console.log('search.current', search)
-        search.length > 0 ?   results.current.filter(event => {
+        search ?   results.current.filter(event => {
             const tags = event.tags ? event.tags.toLowerCase().replace(/[{}]/g, '').split(',') : [];
             let result = (tags.includes(search)) || event.name.toLowerCase().split(' ').includes(search);
             return result;

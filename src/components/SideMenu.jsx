@@ -9,7 +9,7 @@ export default function SideMenu({events, search, map, setCurrMarker, currID}) {
     setEvents(events);
      console.log(search)
      console.log(currentEvents)
-         }, [currID, events, search])
+         }, [currID, events, search, map])
 
 const handleMouseEnter = (lat, lng, id) => {
     setCurrMarker(id);
