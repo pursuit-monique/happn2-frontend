@@ -1,122 +1,119 @@
-
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
-
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-
-
-import { storage } from "../firebase/firebase";
 import { v4 } from "uuid";
+import { Storage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebase/firebase";
+import { LoadScript } from "@react-google-maps/api";
 
-// import 'firebase/storage'; 
-
-
-export default function NewEvent(){
+export default function NewEvent() {
   const backend = process.env.REACT_APP_BACKEND_URL;
-    const autoCompleteRef = useRef();
-    const inputRef = useRef();
-    const [loading, setLoading] = useState(false);
-    const [formValid, setFormValid] = useState(false);
-    const [response, setResponse] = useState(null);
-    const imageUpload = useRef(null);
+  const autoCompleteRef = useRef(null);
+  const inputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [formValid, setFormValid] = useState(false);
+  const [response, setResponse] = useState(null);
+  const imageUpload = useRef(null);
 
+  const [currEvent, setEvent] = useState({
+    name: "",
+    info: "",
+    about: "",
+    picture: "",
+    start_date: "",
+    end_date: "",
+    address: "",
+    lat: 0,
+    lng: 0,
+    organization_id: 1,
+    cause_id: 1,
+    type_id: 1,
+    locale_info: "",
+    tags: "",
+  });
 
-    const [currEvent, setEvent] = useState({
-      name: "",
-      info: "",
-      about: "",
-      picture: "",
-      start_date: "",
-      end_date: "",
-      address: "",
-      lat: 0,
-      lng: 0,
-      organization_id: 1,
-      cause_id: 1,
-      type_id: 1,
-      locale_info: "",
-      tags: ""
-    });
+  const handleFileChange = (e) => {
+    imageUpload.current = e.target.files[0];
+    console.log(imageUpload);
+  };
 
-    const handleFileChange = (e) => {
-      imageUpload.current = e.target.files[0];
-      console.log(imageUpload);
-    };
-
-    async function handleUpload() {
-      if (!imageUpload.current) {
-        console.log("No file selected");
-        return;
-      }
-    
-      const storageRef = ref(storage, `${imageUpload.current.name + v4()}`);
-    
-      try {
-        // Upload the file and wait for the upload to complete
-        const snapshot = await uploadBytes(storageRef, imageUpload.current);
-        
-        // Get the download URL and set the picture state
-        const url = await getDownloadURL(snapshot.ref);
-        return url;
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
+  async function handleUpload() {
+    if (!imageUpload.current) {
+      console.log("No file selected");
+      return;
     }
 
-    function isFormValid(currEvent) {
-      return (
-        currEvent.name.trim() !== "" &&
-        currEvent.info.trim() !== "" &&
-        currEvent.about.trim() !== "" &&
-        currEvent.address.trim() !== "" &&
-        currEvent.start_date !== "" &&
-        currEvent.end_date !== "" 
-      );
+    const storageRef = ref(storage, `${imageUpload.current.name + v4()}`);
+
+    try {
+      // Upload the file and wait for the upload to complete
+      const snapshot = await uploadBytes(storageRef, imageUpload.current);
+
+      // Get the download URL and set the picture state
+      const url = await getDownloadURL(snapshot.ref);
+      return url;
+    } catch (error) {
+      console.error("Error uploading file:", error);
     }
+  }
 
+  function isFormValid(currEvent) {
+    return (
+      currEvent.name.trim() !== "" &&
+      currEvent.info.trim() !== "" &&
+      currEvent.about.trim() !== "" &&
+      currEvent.address.trim() !== "" &&
+      currEvent.start_date !== "" &&
+      currEvent.end_date !== ""
+    );
+  }
 
-  
-    const options = {
-      componentRestrictions: { country: "us"},
-      fields: ["address_components", "geometry", "name", "place_id", "type"],
+  const onLoad = (autocomplete) => {
+    autoCompleteRef.current = autocomplete;
+  };
+
+  const onPlaceChanged = () => {
+    if (autoCompleteRef.current) {
+      const place = autoCompleteRef.current.getPlace();
+      console.log(place);
+
+      setEvent((prevData) => ({
+        ...prevData,
+        address: `${place?.address_components[0].long_name} ${
+          place?.address_components[1].long_name
+        }, ${
+          place.address_components[3].long_name === "Brooklyn" ||
+          place.address_components[3].long_name === "Bronx" ||
+          place.address_components[3].long_name === "Manhattan"
+            ? place?.address_components[3].long_name
+            : place?.address_components[2].long_name
+        }, ${place?.address_components[5]?.short_name}. ${
+          place?.address_components[7]?.short_name
+        }-${place?.address_components[8]?.short_name}`,
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+        locale_info: place.place_id,
+        tags: [place.name, ...place.types],
+      }));
+    }
+  };
+
+  useEffect(() => {
+    const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places`;
+
+    const script = document.createElement("script");
+    script.src = scriptUrl;
+    script.async = true;
+    script.onload = () => {
+      // Script loaded, initialize the Autocomplete
+      onLoad(new window.google.maps.places.Autocomplete(inputRef.current));
     };
 
-    useEffect(() => {
-      const handleScriptLoad = () => {
-        autoCompleteRef.current = new window.google.maps.places.Autocomplete(
-          inputRef.current,
-          options
-        );
-        autoCompleteRef.current.addListener("place_changed", function () {
-          const place = autoCompleteRef.current.getPlace();
-          console.log(place)
-      
-          setEvent((prevData) => ({
-            ...prevData,
-            address: `${place?.address_components[0].long_name} ${place?.address_components[1].long_name}, ${place.address_components[3].long_name === "Brooklyn" || place.address_components[3].long_name === "Bronx" || place.address_components[3].long_name === "Manhattan" ? place?.address_components[3].long_name : place?.address_components[2].long_name}, ${place?.address_components[5]?.short_name}. ${place?.address_components[7]?.short_name}-${place?.address_components[8]?.short_name}`,
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-            'locale_info': place.place_id,
-            'tags': [place.name, ...place.types]
-          }));
-        });
-      } ;
-  
-      const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
-  
-      const script = document.createElement('script');
-      script.src = scriptUrl;
-      script.async = true;
-      script.onload = handleScriptLoad;
-      document.body.appendChild(script);
-      return () => {
-        document.body.removeChild(script);
-      };
-    }, []);
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
 
     async function handleSubmit(event) {
