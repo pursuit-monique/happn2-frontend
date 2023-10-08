@@ -179,9 +179,7 @@ function onViewBroadcast(broadcast){
                     <div className="card text-center shadow ShowPage__Information h-auto">
                     <div className="card-body">
                         <h5 className="card-title"><strong>About this Event</strong></h5>
-                        <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel facilisis nulla. In hac habitasse platea dictumst. Suspendisse id metus vitae metus mattis efficitur at vitae est. Etiam tellus odio, venenatis ac mauris et, mattis finibus leo. Vestibulum at felis suscipit magna egestas auctor eu posuere purus. Duis pellentesque tristique urna quis vestibulum. Pellentesque porta mi vitae felis congue consectetur.
-
-Fusce et dapibus nisl, a euismod elit. In vitae tristique lacus. Cras blandit dui sagittis purus aliquam, quis iaculis ligula pellentesque. Quisque ornare sem vel nisi elementum sagittis. Phasellus sit amet pellentesque risus, porttitor varius dolor. Etiam elementum orci et laoreet gravida. In suscipit dui mauris. Quisque sit amet augue sit amet ante dapibus molestie in at ipsum. Aenean cursus urna a elementum viverra.</p>
+                        <p className="card-text">{currEvent.description}</p>
                     </div>
                     </div>
                     <div className="card text-center shadow ShowPage__Information h-auto">
