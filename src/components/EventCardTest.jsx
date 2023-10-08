@@ -179,7 +179,7 @@ function onViewBroadcast(broadcast){
                     <div className="card text-center shadow ShowPage__Information h-auto">
                     <div className="card-body">
                         <h5 className="card-title"><strong>About this Event</strong></h5>
-                        <p className="card-text">{currEvent.description}</p>
+                        <p className="card-text">{currEvent.about}</p>
                     </div>
                     </div>
                     <div className="card text-center shadow ShowPage__Information h-auto">
