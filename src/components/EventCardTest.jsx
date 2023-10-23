@@ -109,17 +109,17 @@ function onViewBroadcast(broadcast){
       
     const {start, end, is_between} = formatDateRange(currEvent.start_date, currEvent.end_date);
       useEffect( () => {
-        console.log(radius)
+        console.log('radius:', radius)
         axios.get(`${process.env.REACT_APP_BACKEND_URL}/events/one`, {
             params: {
-              latitude: radius?.lat || 23,
-              longitude: radius?.lng || 23,
+              latitude: settings.lat || 23,
+              longitude: settings.lng || 23,
               'id':id
-            //   settings.radius
             },
     
           })
           .then(response => {
+            console.log('settings: ', settings)
             console.log(response.data)
             setCurrEvent(response.data)
           })
@@ -128,7 +128,7 @@ function onViewBroadcast(broadcast){
     
             throw error;
           });
-    }, [settings.radius, radius?.lat, radius?.lng])
+    }, [settings.radius, settings.lat, settings.lng])
 
     return(
     <>
@@ -168,7 +168,7 @@ function onViewBroadcast(broadcast){
                         <p className="card-text"> 
                              <ul className="list-group list-group-flush">
                                 <li className="list-group-item">{currEvent.address?.replace('-undefined', '')}</li>
-                                <li className="list-group-item">{start}
+                                <li className="list-group-item">{start} <br></br>
                                  {end}</li>
                                 <li className="list-group-item">{currEvent.distance_miles?.toFixed(4)} mi away</li>
                             </ul>
@@ -220,7 +220,7 @@ function onViewBroadcast(broadcast){
 
 </div>
 
-<Wrapper apiKey={process.env.REACT_APP_GOOGLE_API_KEY}><div className="bg-light h-50 w-100"><DirectionsMap lat={currEvent.lat} lng={currEvent.lng} setRadius={setRadius} /></div>  </Wrapper>
+<Wrapper apiKey={process.env.REACT_APP_GOOGLE_API_KEY}><div className="bg-light h-50 w-100"><DirectionsMap lat={settings.lat} lng={settings.lng} setRadius={setRadius} /></div>  </Wrapper>
 
     </div>
 <div className="row">

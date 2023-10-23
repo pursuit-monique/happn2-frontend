@@ -117,6 +117,7 @@ const Index = () =>{
         const crd = pos.coords;
         setCurrPos(pos.coords);
         setCurrPos({ lat: crd.latitude, lng: crd.longitude});
+        setSettings({...settings, lat: crd.latitude, lng: crd.longitude})
         console.log("center has been set", crd)
     }
 

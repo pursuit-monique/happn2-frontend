@@ -3,6 +3,8 @@
     height: 100vh;
     z-index: 400;
     margin-left: 17vw;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
 }
 
 .SideCard{
@@ -10,18 +12,24 @@
     filter: brightness(70%) blur(10px);
     transition: filter 0.3s ease;
     margin-left: 24px;
+    scroll-snap-align: center;
+    scroll-snap-type: y mandatory;
+    
 }
 
 .SideText{
     filter: brightness(100%)
 }
 
+
   .SideContainer {
-    width: 35vw;
-    overflow: hidden; 
+    width: 32vw;
+    height: 32.3%;
+    /* overflow: hidden;  */
     transition: filter 1.3s ease;
     margin-bottom: 16px;
     margin-left: 16px;
+
   }
 
   .SideContainer .SideCard{

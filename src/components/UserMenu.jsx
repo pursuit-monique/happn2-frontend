@@ -28,6 +28,31 @@ const UserMenu = () => {
   return (
     <div className="dropdown">
       <div className="position-relative">
+      <span class="material-symbols-outlined position-absolute gradient" style={{
+            // position: "absolute",
+            top: '20px',
+            left: '88vw',
+            width: '64px'
+          }}>
+favorite
+</span>
+
+      <span class="material-symbols-outlined position-absolute gradient"  style={{
+            // position: "absolute",
+            top: '20px',
+            left: '91vw',
+          }}>
+notifications <span class="position-absolute translate-middle badge border border-light rounded-circle bg-primary badgeFont text-light p-1" style={{top: 26, right: -1}}>  <span class="visually-hidden">unread messages</span></span>
+</span>
+
+{/* .material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+} */}
+
         <img
           src="https://xsgames.co/randomusers/avatar.php?g=female"
           className="Avatar"
@@ -72,7 +97,7 @@ const UserMenu = () => {
           </li>
           <li>
             <Link to="/about" className={`dropdown-item ${location.pathname === '/about' ? 'active': ''}`}>
-              About
+              About 
             </Link>
           </li>
         </ul>

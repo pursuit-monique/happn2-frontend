@@ -19,6 +19,39 @@
     }
 }
 
+.material-symbols-outlined {
+    font-size: 34px; 
+    -webkit-text-stroke-color: #F7DFBC;
+    -webkit-text-stroke-width: 1px;
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48;
+  } 
+
+.gradient{
+   background-image:  -webkit-linear-gradient(#314983, #314983);
+   background-size: 100%;
+   background-repeat: repeat;
+   pointer-events: none;
+   /* $dark: #314983;
+   $success: #6f955f;
+   $warning: #ec8527;
+   $danger: #f44336;
+   // $info: #A5D6BA;
+   $info: #7ddcd9; */
+   /* Use the text as a mask for the background. */
+   /* This will show the gradient as a text color rather than element bg. */
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent; 
+   -moz-background-clip: text;
+   -moz-text-fill-color: transparent;
+}
+  .badgeFont {
+    -webkit-text-stroke-width: 0px;
+    font-size: xx-small;
+  }
 .UserMenu{
     &__bg{
         background-color: rgba(23, 23, 23, 0.5);

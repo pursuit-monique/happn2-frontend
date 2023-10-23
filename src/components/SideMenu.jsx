@@ -23,7 +23,7 @@ export default function SideMenu({events, search, map, setCurrMarker, currID}) {
     return(
 
         <>
-         <div className="bg-light position-absolute top-50 start-0 translate-middle SideMenu border-end shadow pt-5 ps-3 overflow-auto">
+         <div className="bg-light position-absolute top-50 start-0 translate-middle border-end shadow pt-5 ps-3 SideMenu">
             <p className="p-0 m-1 text-light">Love my cats.</p>
             { !search ?  currentEvents?.sort((a, b) => a.distance_miles - b.distance_miles).map(event =>{
                 let lat = Number(event?.lat);
@@ -32,16 +32,16 @@ export default function SideMenu({events, search, map, setCurrMarker, currID}) {
                 return(
                     <Link to={`../event/${event.id}`}>
                 <div className="SideContainer" onMouseEnter={() => handleMouseEnter(lat, lng, event.id)} onMouseLeave={() => handleMouseOut()}>
-                    <div class="card p-0 m-0 text-bg-dark SideCard position-absolute shadow-sm" style={{backgroundImage: `url(${event.picture})`,
+                    <div className="card p-0 m-0 text-bg-dark SideCard position-absolute shadow-sm" style={{backgroundImage: `url(${event.picture})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center'}}>
                     </div>
-                    <div class="card p-0 m-0 text-bg-dark position-relative bg-transparent">
-                    <div class="card-img-overlay SideText text-light" style={{filter: "brightness(100%)"}}>
-                        <h5 class="card-title">{event.name}</h5>
-                        <p class="card-text">{event.info}</p>
-                        {event.tags.toLowerCase().replace(/[{}]/g, '').split(',').map(tag => <span class="badge m-1 text-bg-dark">{tag.split('_').join(' ')}</span>)}
-                        <p class="card-text"><small>{event.distance_miles.toFixed(2)}mi away</small></p>      
+                    <div className="card p-0 m-0 text-bg-dark position-relative bg-transparent">
+                    <div className="card-img-overlay SideText text-light" style={{filter: "brightness(100%)"}}>
+                        <h5 className="card-title">{event.name}</h5>
+                        <p className="card-text">{event.info}</p>
+                        {event.tags.toLowerCase().replace(/[{}]/g, '').split(',').map(tag => <span className="badge m-1 text-bg-dark">{tag.split('_').join(' ')}</span>)}
+                        <p className="card-text"><small>{event.distance_miles.toFixed(2)}mi away</small></p>      
                     </div>
                     </div>
                 </div>
@@ -56,17 +56,16 @@ export default function SideMenu({events, search, map, setCurrMarker, currID}) {
                 return(
                     <Link to={`../event/${event.id}`}>
                 <div className="SideContainer" onMouseEnter={() => handleMouseEnter(lat, lng, event.id)} onMouseLeave={() => handleMouseOut()}>
-            <div class="card p-0 m-0 text-bg-dark SideCard position-absolute shadow-sm" style={{backgroundImage: `url(${event.picture})`,
+            <div className="card p-0 m-0 text-bg-dark SideCard position-absolute shadow-sm" style={{backgroundImage: `url(${event.picture})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'}}>
             </div>
-            <div class="card p-0 m-0 text-bg-dark position-relative bg-transparent">
-            <div class="card-img-overlay SideText text-light" style={{filter: "brightness(100%)"}}>
-                <h5 class="card-title">{event.name}</h5>
-                <p class="card-text">{event.info}</p>
-                {event.tags.toLowerCase().replace(/[{}]/g, '').split(',').map(tag => <span class="badge m-1 text-bg-dark">{tag.split('_').join(' ')}</span>)}
-                <p class="card-text"><small>{event.distance_miles.toFixed(2)}mi away</small></p>
-                <div className="bg-dark">hghghg</div>
+            <div className="card p-0 m-0 text-bg-dark position-relative bg-transparent">
+            <div className="card-img-overlay SideText text-light" style={{filter: "brightness(100%)"}}>
+                <h5 className="card-title">{event.name}</h5>
+                <p className="card-text">{event.info}</p>
+                {event.tags.toLowerCase().replace(/[{}]/g, '').split(',').map(tag => <span className="badge m-1 text-bg-dark">{tag.split('_').join(' ')}</span>)}
+                <p className="card-text"><small>{event.distance_miles.toFixed(2)}mi away</small></p>
             </div>
             </div>
             </div>

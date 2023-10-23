@@ -32,6 +32,8 @@ function App() {
     lastname: "Doe",
     roomCode: null,
     roomType: "Generic",
+    lat: 40,
+    lng: -70,
   });
 
   return (

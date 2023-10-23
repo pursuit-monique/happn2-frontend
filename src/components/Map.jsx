@@ -23,7 +23,7 @@ import './Card.css'
 
 
 const Map = () => {
-  const {settings} = useContext(UserContext);
+  const {settings, setSettings} = useContext(UserContext);
 
   const [currMap, setMap] = useState();
   const [currID, setID] = useState();
@@ -38,7 +38,7 @@ const Map = () => {
   let map;
   
   let id = useRef(null);
-  console.log("wasting cpu resources:", id.current);
+  // console.log("wasting cpu resources:", id.current);
     useEffect(()=>{
       if (radiusMarker) 
       {radiusMarker.setRadius(settings.radius);
@@ -51,12 +51,12 @@ const Map = () => {
           
         })
         .then(response => {
-          console.log("Success: ", response.data);
+          // console.log("Success: ", response.data);
       
           setTempData(response.data);
           // console.log(AdvancedMarkerElement)
           // console.log()
-          console.log(currMap, map);
+          // console.log(currMap, map);
           let map = currMap;
           response.data.map(newMarker => new Marker({map, 'position': { lat: newMarker.lat, lng: newMarker.lng }}))
           
@@ -85,14 +85,14 @@ const Map = () => {
     
 
     async function advancedMarkerGenerator(){
-      console.log('makingmarkers')
+      // console.log('makingmarkers')
       try {
       const {AdvancedMarkerElement}  =  await google.maps.importLibrary("marker").then(info => {
 
       
       let markers = tempData.map(info =>{
         
-          console.log('markercreated')
+          // console.log('markercreated')
           function createElementforEach(title, time, description, photo, lat, lng, id){
            const root = document.createElement("div");
            root.innerHTML = `<div class="event-container" id=${id} data-bridges="${lat}_${lng}">
@@ -124,7 +124,7 @@ let map = currMap
             map.panTo(LatLngCurrent)
             setID({position: {lat: Number(LatLngArray[0]), lng: Number(LatLngArray[1]) }, id: info});
             
-            console.log(LatLngCurrent);
+            // console.log(LatLngCurrent);
          }); 
       //    marker2.addListener("click", () => {
       //     map.setZoom(8);
@@ -220,6 +220,8 @@ featureLayer.style = (options) => {
         map.setCenter({ lat: crd.latitude, lng: crd.longitude});
         map.panTo({ lat: crd.latitude, lng: crd.longitude});
         setCurrPos({ lat: crd.latitude, lng: crd.longitude});
+        setSettings({...settings, lat: crd.latitude, lng: crd.longitude})
+        console.log('settings', settings);
         var newCoordinates = new google.maps.LatLng(crd.latitude, crd.longitude);
         marker2.setPosition(newCoordinates);
         setRadiusMarker(radius);

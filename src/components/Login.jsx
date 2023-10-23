@@ -10,8 +10,6 @@ export default function SignupLogin() {
   const [user, setUser] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const API = process.env.REACT_APP_BACKEND_URL;
-  // const API = "https://happn.onrender.com";
-  // const API = process.env.REACT_APP_LOCAL_BACKEND;
   console.log("backend", API);
 
   async function googleLogin() {
